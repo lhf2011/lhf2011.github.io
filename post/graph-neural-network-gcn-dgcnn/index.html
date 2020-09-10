@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Graph neural network - GCN, DGCNN | Gridea</title>
-<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1599707021406">
+<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1599707346197">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="Graph neural network - GCN, DGCNN | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
@@ -21,7 +21,7 @@
       <div class="main-content">
         <div class="site-header">
   <a href="https://lhf2011.github.io">
-  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1599707021406" alt="">
+  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1599707346197" alt="">
   </a>
   <h1 class="site-title">
     Gridea
@@ -91,7 +91,7 @@
                 <p>Graph neural networks are usually used in social network, citation network, molecules and 3D mesh, because in these fields, data are represented in the form of graphs. For example, the interactions between users and products in e-commence, the molecules in chemistry, are modeled as graphs(Wu et al.). A graph consists of vertices and edges, the edge describes the relativity of the two vertices it connects. As graph can be irregular, it may have a variable size of unordered vertices, and vertices from a graph may have a different number of neighbors, this feature makes it suitable for LiDAR point clouds due to their irregular, unstructed and orderless.</p>
 <p>In this article, I introduce two GCN models, the General GCN and the Dynamic Graph CNN(DGCNN).</p>
 <p>GCN<br>
-In GCN, graph structure is represented by similarity matrix(also named adjacency matrix, connectivity matrix)</p>
+In GCN, graph structure is represented by similarity matrix(also named adjacency matrix, connectivity matrix). The graph below can be demonstrated by matrix(1).</p>
 <img src="../../post-images/20200909_1.png" width="200" height="200" align=center />
 <p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mtable side="right"><mlabeledtr><mtd><mtext>(1)</mtext></mtd><mtd><mrow><mo fence="true">[</mo><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>1</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>2</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>3</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>4</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>5</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>6</mn></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>7</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>8</mn></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><mn>9</mn></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow></mtd></mlabeledtr></mtable><annotation encoding="application/x-tex"> \left[
  \begin{matrix}

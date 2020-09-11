@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title> imageSentimentClassification - Kaggle Competition | Gridea</title>
-<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1599792539053">
+<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1599792603145">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title=" imageSentimentClassification - Kaggle Competition | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
@@ -28,7 +28,7 @@ In the training data set, ..." />
       <div class="main-content">
         <div class="site-header">
   <a href="https://lhf2011.github.io">
-  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1599792539053" alt="">
+  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1599792603145" alt="">
   </a>
   <h1 class="site-title">
     Gridea
@@ -108,7 +108,7 @@ In the training data set, ..." />
 <a href="https://drive.google.com/drive/folders/11VtTjflPaHVZCYuXjtpVAHcis6tbkq9w">dataset</a></p>
 <p>#Task<br>
 Image classification and explain your model.<br>
-<img src="../../post-images/20200910_rawImage.jpg" width="400" height="100" align=center /></p>
+<img src="../../post-images/20200910_rawImage.jpg" width="500" height="100" align=center /></p>
 <p>#Data augement<br>
 In the training data set, faces in different sizes and positions, different tilting angles, and some facing left but some others are in the right direction. These unimportant features allow us to modify them to enrich our training data set. The Keras ImageDataGenerator is a function that can transform images randomly, within the user defined restrictions. In this project, the restrictions defined as</p>
 <pre><code>datagen = ImageDataGenerator(rotation_range=40, zoom_range=0.4, width_shift_range = 0.2, height_shift_range=0.2,
@@ -154,7 +154,7 @@ In our training data, some images are too dark or too bright, it's hard to see f
 </code></pre>
 <p>#Model<br>
 The model is a combination of truncated Vgg16 and NiN. I take 3 blocks of Vgg16, connected with a NiN block. The NiN is Network-In-Network, it has two significant improvements in neural network, one is MLP-conv(multilayer perceptron), and the other one is GAP(global average pooling). In my project, the MLP-conv consists of a 3x3 conv layer and two 1x1 conv layers. To avoid gradient vanish and overfitting, batch normalization is added between 3x3 conv layer and “Relu” activation, and Dropout follows 1x1 conv layer. The GAP layer takes the average of each feature map, the resulting vector is fed directly into the softmax layer.</p>
-<img src="../../post-images/20200910_1.jpg" width="300" height="600" align=center />
+<img src="../../post-images/20200910_1.jpg" width="450" height="600" align=center />
 <p>#Visualize CNN filter by gradient ascent<br>
 Filter visualization displays the features extracted by a convolution kernel, it's used to explain the model.<br>
 Randomly choosing some filters in the target convolution layer, then get their gradient loss and do gradient ascent to add gradient loss on random noise, we can find what features those filters are extracting.<br>

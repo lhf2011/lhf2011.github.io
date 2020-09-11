@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2020-09-11T02:56:37.590Z</updated>
+    <updated>2020-09-11T02:57:21.356Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -15,12 +15,12 @@
         <id>https://lhf2011.github.io/post/imagesentimentclassification-kaggle-competition/</id>
         <link href="https://lhf2011.github.io/post/imagesentimentclassification-kaggle-competition/">
         </link>
-        <updated>2020-09-04T13:26:54.000Z</updated>
-        <content type="html"><![CDATA[<p>#Resources<br>
-<a href="https://github.com/lhf2011/imageSentimentClassification">My code</a><br>
+        <updated>2020-09-04T01:26:54.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="resources">Resources</h1>
+<p><a href="https://github.com/lhf2011/imageSentimentClassification">My code</a><br>
 <a href="https://drive.google.com/drive/folders/11VtTjflPaHVZCYuXjtpVAHcis6tbkq9w">dataset</a></p>
-<p>#Task<br>
-Image classification and explain your model.<br>
+<h1 id="task">Task</h1>
+<p>Image classification and explain your model.<br>
 <img src="../../post-images/20200910_rawImage.jpg" width="500" height="100" align=center /></p>
 <h1 id="data-augement">Data augement</h1>
 <p>In the training data set, faces in different sizes and positions, different tilting angles, and some facing left but some others are in the right direction. These unimportant features allow us to modify them to enrich our training data set. The Keras ImageDataGenerator is a function that can transform images randomly, within the user defined restrictions. In this project, the restrictions defined as</p>

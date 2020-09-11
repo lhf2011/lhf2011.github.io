@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2020-09-11T02:54:03.522Z</updated>
+    <updated>2020-09-11T02:56:37.590Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -15,22 +15,22 @@
         <id>https://lhf2011.github.io/post/imagesentimentclassification-kaggle-competition/</id>
         <link href="https://lhf2011.github.io/post/imagesentimentclassification-kaggle-competition/">
         </link>
-        <updated>2020-09-05T01:26:54.000Z</updated>
+        <updated>2020-09-04T13:26:54.000Z</updated>
         <content type="html"><![CDATA[<p>#Resources<br>
 <a href="https://github.com/lhf2011/imageSentimentClassification">My code</a><br>
 <a href="https://drive.google.com/drive/folders/11VtTjflPaHVZCYuXjtpVAHcis6tbkq9w">dataset</a></p>
 <p>#Task<br>
 Image classification and explain your model.<br>
 <img src="../../post-images/20200910_rawImage.jpg" width="500" height="100" align=center /></p>
-<p>#Data augement<br>
-In the training data set, faces in different sizes and positions, different tilting angles, and some facing left but some others are in the right direction. These unimportant features allow us to modify them to enrich our training data set. The Keras ImageDataGenerator is a function that can transform images randomly, within the user defined restrictions. In this project, the restrictions defined as</p>
+<h1 id="data-augement">Data augement</h1>
+<p>In the training data set, faces in different sizes and positions, different tilting angles, and some facing left but some others are in the right direction. These unimportant features allow us to modify them to enrich our training data set. The Keras ImageDataGenerator is a function that can transform images randomly, within the user defined restrictions. In this project, the restrictions defined as</p>
 <pre><code>datagen = ImageDataGenerator(rotation_range=40, zoom_range=0.4, width_shift_range = 0.2, height_shift_range=0.2,
                                  shear_range=0.1, horizontal_flip=True,
                                  fill_mode='nearest', dtype='uint8')
 </code></pre>
 <p>Those generated images can reduce overfitting, and this kind of data augement method can reduce memory usage.</p>
-<p>#Image Contrast Enhancement<br>
-In our training data, some images are too dark or too bright, it's hard to see faces. To avoid the effects of light, histogram equalization was used to balance pixel distribution and adjust the picture contrast.</p>
+<h1 id="image-contrast-enhancement">Image Contrast Enhancement</h1>
+<p>In our training data, some images are too dark or too bright, it's hard to see faces. To avoid the effects of light, histogram equalization was used to balance pixel distribution and adjust the picture contrast.</p>
 <pre><code class="language-python">    # statistical gray scale distribution
     def calcHistogram(self,image):
         grayStatistic = [0] * 256  # how many pixels in each gray scale
@@ -65,21 +65,21 @@ In our training data, some images are too dark or too bright, it's hard to see f
                 img[i, j] = grayStatistic[image[i, j]]
         return img
 </code></pre>
-<p>#Model<br>
-The model is a combination of truncated Vgg16 and NiN. I take 3 blocks of Vgg16, connected with a NiN block. The NiN is Network-In-Network, it has two significant improvements in neural network, one is MLP-conv(multilayer perceptron), and the other one is GAP(global average pooling). In my project, the MLP-conv consists of a 3x3 conv layer and two 1x1 conv layers. To avoid gradient vanish and overfitting, batch normalization is added between 3x3 conv layer and “Relu” activation, and Dropout follows 1x1 conv layer. The GAP layer takes the average of each feature map, the resulting vector is fed directly into the softmax layer.</p>
+<h1 id="model">Model</h1>
+<p>The model is a combination of truncated Vgg16 and NiN. I take 3 blocks of Vgg16, connected with a NiN block. The NiN is Network-In-Network, it has two significant improvements in neural network, one is MLP-conv(multilayer perceptron), and the other one is GAP(global average pooling). In my project, the MLP-conv consists of a 3x3 conv layer and two 1x1 conv layers. To avoid gradient vanish and overfitting, batch normalization is added between 3x3 conv layer and “Relu” activation, and Dropout follows 1x1 conv layer. The GAP layer takes the average of each feature map, the resulting vector is fed directly into the softmax layer.</p>
 <img src="../../post-images/20200910_1.jpg" width="450" height="600" align=center />
-<p>#Visualize CNN filter by gradient ascent<br>
-Filter visualization displays the features extracted by a convolution kernel, it's used to explain the model.<br>
+<h1 id="visualize-cnn-filter-by-gradient-ascent">Visualize CNN filter by gradient ascent</h1>
+<p>Filter visualization displays the features extracted by a convolution kernel, it's used to explain the model.<br>
 Randomly choosing some filters in the target convolution layer, then get their gradient loss and do gradient ascent to add gradient loss on random noise, we can find what features those filters are extracting.<br>
 <img src="../../post-images/20200910_2.png" width="400" height="400" align=center /></p>
 <p>Adding gradient loss of each filter on the origin image, we can find out what those filters do on our images. The following image demonstrated  that the last conv layer can extract eyes and facial contour features.<br>
 <img src="../../post-images/20200910_3.png" width="400" height="400" align=center /></p>
-<p>#Saliency Map<br>
-In saliency map, we find the important areas on the face are highlighted by neural networks.<br>
+<h1 id="saliency-map">Saliency Map</h1>
+<p>In saliency map, we find the important areas on the face are highlighted by neural networks.<br>
 <img src="../../post-images/20200910_4.png" width="150" height="150" align=center /><br>
 <img src="../../post-images/20200910_5.png" width="150" height="150" align=center /></p>
-<p>#Confusion Matrix<br>
-In the training data set, the &quot;disgust&quot; data are rare, therefore, for other kinds of sentiment, it's not easy to be misjudged as disgust.<br>
+<h1 id="confusion-matrix">Confusion Matrix</h1>
+<p>In the training data set, the &quot;disgust&quot; data are rare, therefore, for other kinds of sentiment, it's not easy to be misjudged as disgust.<br>
 <img src="../../post-images/20200910_6.png" width="500" height="500" align=center /></p>
 ]]></content>
     </entry>

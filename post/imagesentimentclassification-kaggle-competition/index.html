@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title> imageSentimentClassification - Kaggle Competition | Gridea</title>
-<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1599792840357">
+<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1599792993267">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title=" imageSentimentClassification - Kaggle Competition | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
@@ -17,8 +17,8 @@ dataset
 #Task
 Image classification and explain your model.
 
-#Data augement
-In the training data set, ..." />
+Data augement
+In the training data set, f..." />
     <meta name="keywords" content="image preprocessing,neuron visualization" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -28,7 +28,7 @@ In the training data set, ..." />
       <div class="main-content">
         <div class="site-header">
   <a href="https://lhf2011.github.io">
-  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1599792840357" alt="">
+  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1599792993267" alt="">
   </a>
   <h1 class="site-title">
     Gridea
@@ -109,15 +109,15 @@ In the training data set, ..." />
 <p>#Task<br>
 Image classification and explain your model.<br>
 <img src="../../post-images/20200910_rawImage.jpg" width="500" height="100" align=center /></p>
-<p>#Data augement<br>
-In the training data set, faces in different sizes and positions, different tilting angles, and some facing left but some others are in the right direction. These unimportant features allow us to modify them to enrich our training data set. The Keras ImageDataGenerator is a function that can transform images randomly, within the user defined restrictions. In this project, the restrictions defined as</p>
+<h1 id="data-augement">Data augement</h1>
+<p>In the training data set, faces in different sizes and positions, different tilting angles, and some facing left but some others are in the right direction. These unimportant features allow us to modify them to enrich our training data set. The Keras ImageDataGenerator is a function that can transform images randomly, within the user defined restrictions. In this project, the restrictions defined as</p>
 <pre><code>datagen = ImageDataGenerator(rotation_range=40, zoom_range=0.4, width_shift_range = 0.2, height_shift_range=0.2,
                                  shear_range=0.1, horizontal_flip=True,
                                  fill_mode='nearest', dtype='uint8')
 </code></pre>
 <p>Those generated images can reduce overfitting, and this kind of data augement method can reduce memory usage.</p>
-<p>#Image Contrast Enhancement<br>
-In our training data, some images are too dark or too bright, it's hard to see faces. To avoid the effects of light, histogram equalization was used to balance pixel distribution and adjust the picture contrast.</p>
+<h1 id="image-contrast-enhancement">Image Contrast Enhancement</h1>
+<p>In our training data, some images are too dark or too bright, it's hard to see faces. To avoid the effects of light, histogram equalization was used to balance pixel distribution and adjust the picture contrast.</p>
 <pre><code class="language-python">    # statistical gray scale distribution
     def calcHistogram(self,image):
         grayStatistic = [0] * 256  # how many pixels in each gray scale
@@ -152,26 +152,34 @@ In our training data, some images are too dark or too bright, it's hard to see f
                 img[i, j] = grayStatistic[image[i, j]]
         return img
 </code></pre>
-<p>#Model<br>
-The model is a combination of truncated Vgg16 and NiN. I take 3 blocks of Vgg16, connected with a NiN block. The NiN is Network-In-Network, it has two significant improvements in neural network, one is MLP-conv(multilayer perceptron), and the other one is GAP(global average pooling). In my project, the MLP-conv consists of a 3x3 conv layer and two 1x1 conv layers. To avoid gradient vanish and overfitting, batch normalization is added between 3x3 conv layer and “Relu” activation, and Dropout follows 1x1 conv layer. The GAP layer takes the average of each feature map, the resulting vector is fed directly into the softmax layer.</p>
+<h1 id="model">Model</h1>
+<p>The model is a combination of truncated Vgg16 and NiN. I take 3 blocks of Vgg16, connected with a NiN block. The NiN is Network-In-Network, it has two significant improvements in neural network, one is MLP-conv(multilayer perceptron), and the other one is GAP(global average pooling). In my project, the MLP-conv consists of a 3x3 conv layer and two 1x1 conv layers. To avoid gradient vanish and overfitting, batch normalization is added between 3x3 conv layer and “Relu” activation, and Dropout follows 1x1 conv layer. The GAP layer takes the average of each feature map, the resulting vector is fed directly into the softmax layer.</p>
 <img src="../../post-images/20200910_1.jpg" width="450" height="600" align=center />
-<p>#Visualize CNN filter by gradient ascent<br>
-Filter visualization displays the features extracted by a convolution kernel, it's used to explain the model.<br>
+<h1 id="visualize-cnn-filter-by-gradient-ascent">Visualize CNN filter by gradient ascent</h1>
+<p>Filter visualization displays the features extracted by a convolution kernel, it's used to explain the model.<br>
 Randomly choosing some filters in the target convolution layer, then get their gradient loss and do gradient ascent to add gradient loss on random noise, we can find what features those filters are extracting.<br>
 <img src="../../post-images/20200910_2.png" width="400" height="400" align=center /></p>
 <p>Adding gradient loss of each filter on the origin image, we can find out what those filters do on our images. The following image demonstrated  that the last conv layer can extract eyes and facial contour features.<br>
 <img src="../../post-images/20200910_3.png" width="400" height="400" align=center /></p>
-<p>#Saliency Map<br>
-In saliency map, we find the important areas on the face are highlighted by neural networks.<br>
+<h1 id="saliency-map">Saliency Map</h1>
+<p>In saliency map, we find the important areas on the face are highlighted by neural networks.<br>
 <img src="../../post-images/20200910_4.png" width="150" height="150" align=center /><br>
 <img src="../../post-images/20200910_5.png" width="150" height="150" align=center /></p>
-<p>#Confusion Matrix<br>
-In the training data set, the &quot;disgust&quot; data are rare, therefore, for other kinds of sentiment, it's not easy to be misjudged as disgust.<br>
+<h1 id="confusion-matrix">Confusion Matrix</h1>
+<p>In the training data set, the &quot;disgust&quot; data are rare, therefore, for other kinds of sentiment, it's not easy to be misjudged as disgust.<br>
 <img src="../../post-images/20200910_6.png" width="500" height="500" align=center /></p>
 
               </div>
               <div class="toc-container">
-                
+                <ul class="markdownIt-TOC">
+<li><a href="#data-augement">Data augement</a></li>
+<li><a href="#image-contrast-enhancement">Image Contrast Enhancement</a></li>
+<li><a href="#model">Model</a></li>
+<li><a href="#visualize-cnn-filter-by-gradient-ascent">Visualize CNN filter by gradient ascent</a></li>
+<li><a href="#saliency-map">Saliency Map</a></li>
+<li><a href="#confusion-matrix">Confusion Matrix</a></li>
+</ul>
+
               </div>
             </div>
           </article>

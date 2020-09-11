@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2020-09-11T03:05:22.018Z</updated>
+    <updated>2020-09-11T04:06:38.169Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -10,6 +10,47 @@
     <logo>https://lhf2011.github.io/images/avatar.png</logo>
     <icon>https://lhf2011.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[camera driver on Linux-V4L2(video for linux two)]]></title>
+        <id>https://lhf2011.github.io/post/camera-driver-on-linux-v4l2video-for-linux-two/</id>
+        <link href="https://lhf2011.github.io/post/camera-driver-on-linux-v4l2video-for-linux-two/">
+        </link>
+        <updated>2020-09-10T15:53:57.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="environment">Environment</h1>
+<p>Camera sensor(CMOS) is Aptina AR0143.<br>
+Renesas R-Car H3.<br>
+OS: Renesas Yocto Linux.</p>
+<h1 id="task">Task</h1>
+<p>In our driverless car system, there are 4 fisheye cameras, located at the front,back,left and right side of our car, we call them a surround-view camera.<br>
+In this camera driver programming task, I do not focus on how to power the sensor, how to register it on an I2C bus, my task is: How to capture raw frames in an application software component, that's to say, how to transfer the image data from kernel to user space.</p>
+<h1 id="streaming">Streaming</h1>
+<p>In this peoject, we adopt 2 ways in raw data streaming, one is memory mapping, and the other one is user pointer.<br>
+In memory mapping, ioctl request/release buffers in physic address, call the “mmap” mapping and “munmap” unmapping the physic address into user virtual address.<br>
+In user pointer method, the application software component allocate and release the memory, and give the pointer to V4L2 driver, the driver will save the image data in this pointer's memory.</p>
+<h1 id="workflow">Workflow</h1>
+<p>No matter which method to allocate the memory, the process is the same one.</p>
+<h2 id="1-open_device">1), open_device</h2>
+<h2 id="2-init_device">2), init_device:</h2>
+<p>set image size, format and frame rate, and allocate memory in memory mapping or user pointer method I mentioned above.</p>
+<h2 id="3-start_capturing">3), Start_capturing:</h2>
+<p>VIDIOC_QBUF get data from buffer and show it on screen.</p>
+<h2 id="4-open_fb">4), open_fb():</h2>
+<p>open the fbfd(frame buffer file descriptor), Map the device to memory.</p>
+<h2 id="5-mainloop">5), mainloop():</h2>
+<p>it's a loop of read_frame, in read_frame function, read device’s file descriptor, transform image data from device -&gt; memory -&gt; application software component.<br>
+xioctl(fd[dev], VIDIOC_DQBUF, &amp;buf) //VIDIOC_DQBUF: put image data into a buffer.<br>
+xioctl(fd[dev], VIDIOC_QBUF, &amp;buf)//VIDIOC_QBUF：get image data from buffer.<br>
+xioctl(fd[dev], VIDIOC_STREAMON, &amp;type)//VIDIOC_STREAMON: show the image on screen.</p>
+<h2 id="6-close_fb">6), close_fb():</h2>
+<p>close fbfd(frame buffer file descriptor).</p>
+<h2 id="7-stop_capturingdev">7), stop_capturing(dev):</h2>
+<p>stop the screen showing</p>
+<h2 id="8-uninit_devicedev">8), uninit_device(dev):</h2>
+<p>release the memory</p>
+<h2 id="9-close_devicedev">9), close_device(dev):</h2>
+<p>close device’s file descriptor</p>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[ imageSentimentClassification - Kaggle Competition]]></title>
         <id>https://lhf2011.github.io/post/imagesentimentclassification-kaggle-competition/</id>

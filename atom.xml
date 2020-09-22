@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2020-09-22T16:44:22.261Z</updated>
+    <updated>2020-09-22T16:49:37.402Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -10,31 +10,6 @@
     <logo>https://lhf2011.github.io/images/avatar.png</logo>
     <icon>https://lhf2011.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
-    <entry>
-        <title type="html"><![CDATA[Nearest Neighbor Search for LiDAR cloud points]]></title>
-        <id>https://lhf2011.github.io/post/nearest-neighbor-search-for-lidar-cloud-points/</id>
-        <link href="https://lhf2011.github.io/post/nearest-neighbor-search-for-lidar-cloud-points/">
-        </link>
-        <updated>2020-09-22T01:03:13.000Z</updated>
-        <content type="html"><![CDATA[<p>Task: For a frame of Nx3 point cloud, 8-NN ? 3-NN search for each point, by implementing the following 3 ways:<br>
-1, Brute-force search<br>
-2, scipy.spatial.KDTree<br>
-3, you own kd-tree octree</p>
-<h1 id="brute-force-search">Brute-force search</h1>
-<pre><code class="language-python">for query in querys:
-    begin_t = time.time()
-    diff = np.linalg.norm(np.expand_dims(query,0) - db_np,axis=1)
-    nn_idx = np.argsort(diff)
-    nn_dist = diff[nn_idx]
-</code></pre>
-<p>#scipy<br>
-scipy.spatial.KDTree</p>
-<pre><code class="language-python">sTree = sciKDtree(db_np, leaf_size)
-</code></pre>
-<h1 id="kd-tree">Kd-tree</h1>
-<h1 id="octree">Octree</h1>
-]]></content>
-    </entry>
     <entry>
         <title type="html"><![CDATA[PCA for normal vector estimation]]></title>
         <id>https://lhf2011.github.io/post/pca-for-normal-vector-estimation/</id>
@@ -75,6 +50,29 @@ point_cloud_primary_vector = eigenVec[:, 0]
 point_cloud_normal_vector = eigenVec[:, 2]
 print('for extracting ground plane normal, the normal vector is: ', point_cloud_normal_vector)
 </code></pre>
+]]></content>
+    </entry>
+    <entry>
+        <title type="html"><![CDATA[Nearest Neighbor Search for LiDAR cloud points]]></title>
+        <id>https://lhf2011.github.io/post/nearest-neighbor-search-for-lidar-cloud-points/</id>
+        <link href="https://lhf2011.github.io/post/nearest-neighbor-search-for-lidar-cloud-points/">
+        </link>
+        <updated>2020-09-21T13:03:13.000Z</updated>
+        <content type="html"><![CDATA[<p>Task:<br>
+1, For a frame of Nx3 point cloud, building my own kd-tree and octree.<br>
+2, KNN search for each point, comparing the time cost with Brute-force search and the function in scipy.spatial.KDTree.</p>
+<h1 id="brute-force-search">Brute-force search</h1>
+<pre><code class="language-python">for query in querys:
+    begin_t = time.time()
+    diff = np.linalg.norm(np.expand_dims(query,0) - db_np,axis=1)
+    nn_idx = np.argsort(diff)
+    nn_dist = diff[nn_idx]
+</code></pre>
+<p>#scipy</p>
+<pre><code class="language-python">sTree = sciKDtree(db_np, leaf_size)
+</code></pre>
+<h1 id="kd-tree">Kd-tree</h1>
+<h1 id="octree">Octree</h1>
 ]]></content>
     </entry>
     <entry>

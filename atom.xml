@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2020-09-22T16:37:35.891Z</updated>
+    <updated>2020-09-22T16:44:22.261Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -82,7 +82,7 @@ print('for extracting ground plane normal, the normal vector is: ', point_cloud_
         <id>https://lhf2011.github.io/post/ground-plane-segmentation/</id>
         <link href="https://lhf2011.github.io/post/ground-plane-segmentation/">
         </link>
-        <updated>2020-09-19T09:08:36.000Z</updated>
+        <updated>2020-09-17T21:08:36.000Z</updated>
         <content type="html"><![CDATA[<h1 id="task">Task</h1>
 <p>Use KITTI 3D object detection dataset<br>
 Remove the ground from the lidar points, visualize ground as blue<br>
@@ -121,7 +121,7 @@ if not ( (dy1dy2[0]!=dy1dy2[1]) or (dy1dy2[2]!=dy1dy2[1]) ):
 <h2 id="2-solve-the-model">2, Solve the model</h2>
 <p>There are 2 ways to build a plane model based on the chosen 3 points: p1,p2,p3</p>
 <h3 id="21-pca">2.1, PCA</h3>
-<p>The eigenvector corresponding to the minimin eigenvalue, is the normal direction of the plane.</p>
+<p>The eigenvector corresponding to the minimin eigenvalue, is the normal direction of the plane. Please refer to <a href="https://lhf2011.github.io/post/pca-for-normal-vector-estimation/">my another post</a>.</p>
 <h3 id="22-cross-product">2.2, Cross product</h3>
 <pre><code class="language-python">p12= p2-p1
 p13= p3-p1

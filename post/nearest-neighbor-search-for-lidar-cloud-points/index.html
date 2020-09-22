@@ -2,21 +2,17 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>About | Gridea</title>
+<title>Nearest Neighbor Search for LiDAR cloud points | Gridea</title>
 <link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1600786145895">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="About | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="Nearest Neighbor Search for LiDAR cloud points | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="
-Welcome！🤝
-
-🏠 Autonomous driving
-👨‍💻 Hongfei
-⛹ SLAM, LiDAR, computer vision, Deep learning, 3D reconstruction, path ..." />
+    <meta name="description" content="Task: For a frame of Nx3 point cloud, 8-NN ? 3-NN search for each point, by implementing the following 3 ways:
+1, Brute-..." />
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -79,11 +75,11 @@ Welcome！🤝
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              About
+              Nearest Neighbor Search for LiDAR cloud points
             </h2>
             <div class="post-info">
               <span>
-                2019-01-24
+                2020-09-21
               </span>
               <span>
                 1 min read
@@ -93,25 +89,30 @@ Welcome！🤝
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <blockquote>
-<p>Welcome！🤝</p>
-</blockquote>
-<h2 id="autonomous-driving">🏠 Autonomous driving</h2>
-<h2 id="hongfei">👨‍💻 Hongfei</h2>
-<h2 id="slam-lidar-computer-vision-deep-learning-3d-reconstruction-path-planing">⛹ SLAM, LiDAR, computer vision, Deep learning, 3D reconstruction, path planing</h2>
-<h2 id="lhf2011ustceducn">📬 lhf2011@ustc.edu.cn</h2>
+                <p>Task: For a frame of Nx3 point cloud, 8-NN ? 3-NN search for each point, by implementing the following 3 ways:<br>
+1, Brute-force search<br>
+2, scipy.spatial.KDTree<br>
+3, you own kd-tree octree</p>
+<h1 id="brute-force-search">Brute-force search</h1>
+<pre><code class="language-python">for query in querys:
+    begin_t = time.time()
+    diff = np.linalg.norm(np.expand_dims(query,0) - db_np,axis=1)
+    nn_idx = np.argsort(diff)
+    nn_dist = diff[nn_idx]
+</code></pre>
+<p>#scipy<br>
+scipy.spatial.KDTree</p>
+<pre><code class="language-python">sTree = sciKDtree(db_np, leaf_size)
+</code></pre>
+<h1 id="kd-tree">Kd-tree</h1>
+<h1 id="octree">Octree</h1>
 
               </div>
               <div class="toc-container">
                 <ul class="markdownIt-TOC">
-<li>
-<ul>
-<li><a href="#autonomous-driving">🏠 Autonomous driving</a></li>
-<li><a href="#hongfei">👨‍💻 Hongfei</a></li>
-<li><a href="#slam-lidar-computer-vision-deep-learning-3d-reconstruction-path-planing">⛹ SLAM, LiDAR, computer vision, Deep learning, 3D reconstruction, path planing</a></li>
-<li><a href="#lhf2011ustceducn">📬 lhf2011@ustc.edu.cn</a></li>
-</ul>
-</li>
+<li><a href="#brute-force-search">Brute-force search</a></li>
+<li><a href="#kd-tree">Kd-tree</a></li>
+<li><a href="#octree">Octree</a></li>
 </ul>
 
               </div>
@@ -119,6 +120,15 @@ Welcome！🤝
           </article>
         </div>
 
+        
+          <div class="next-post">
+            <div class="next">Next</div>
+            <a href="https://lhf2011.github.io/post/ground-plane-segmentation/">
+              <h3 class="post-title">
+                Ground plane segmentation(RANSAC) and clustering(DBSCAN)
+              </h3>
+            </a>
+          </div>
         
 
         

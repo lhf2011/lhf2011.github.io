@@ -2,18 +2,17 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Nearest Neighbor Search for LiDAR cloud points | Gridea</title>
+<title>PCA for normal vector estimation | Gridea</title>
 <link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1600792616659">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="Nearest Neighbor Search for LiDAR cloud points | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="PCA for normal vector estimation | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="Task: For a frame of Nx3 point cloud, 8-NN ? 3-NN search for each point, by implementing the following 3 ways:
-1, Brute-..." />
-    <meta name="keywords" content="" />
+    <meta name="description" content="In the work of cloud point processing, PCA are usually used to extract the normal vector of a plane, such as a wall, or ..." />
+    <meta name="keywords" content="normal vector,PCA" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
   </head>
@@ -75,44 +74,69 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Nearest Neighbor Search for LiDAR cloud points
+              PCA for normal vector estimation
             </h2>
             <div class="post-info">
               <span>
                 2020-09-21
               </span>
               <span>
-                1 min read
+                2 min read
               </span>
+              
+                <a href="https://lhf2011.github.io/tag/hYYcns2ZL/" class="post-tag">
+                  # normal vector
+                </a>
+              
+                <a href="https://lhf2011.github.io/tag/w2lPTudp7/" class="post-tag">
+                  # PCA
+                </a>
               
             </div>
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <p>Task: For a frame of Nx3 point cloud, 8-NN ? 3-NN search for each point, by implementing the following 3 ways:<br>
-1, Brute-force search<br>
-2, scipy.spatial.KDTree<br>
-3, you own kd-tree octree</p>
-<h1 id="brute-force-search">Brute-force search</h1>
-<pre><code class="language-python">for query in querys:
-    begin_t = time.time()
-    diff = np.linalg.norm(np.expand_dims(query,0) - db_np,axis=1)
-    nn_idx = np.argsort(diff)
-    nn_dist = diff[nn_idx]
+                <p>In the work of cloud point processing, PCA are usually used to extract the normal vector of a plane, such as a wall, or the ground plane.</p>
+<p>For the normal vector, it is the eigen vector corresponds to the  <strong>minimum</strong> eigen value after PCA.</p>
+<h1 id="for-a-point-point-get-all-neighbors-index-by-radius-search">for a point &quot;point&quot;, get all neighbors' index by radius search</h1>
+<pre><code class="language-python">    radius= 100
+    [_, idx, _] = pcd_tree.search_radius_vector_3d(point_cloud_o3d.points[point], radius)
+    k_nearest_point = np.asarray(point_cloud_o3d.points)[idx, :]
 </code></pre>
-<p>#scipy<br>
-scipy.spatial.KDTree</p>
-<pre><code class="language-python">sTree = sciKDtree(db_np, leaf_size)
+<h1 id="build-the-pca-function">build the PCA function</h1>
+<pre><code class="language-python">def PCA(k_nearest_point, correlation=False, sort=True):
+    data_mean = np.mean(k_nearest_point, axis=0) 
+    normalize_data = k_nearest_point - data_mean  # normalize
+
+    # H is the covariance matrix = np.dot(normalize_data.T, normalize_data) 
+    # The difference of &quot;np.corrcoef&quot; and &quot;np.cov&quot;: The H matrix after &quot;np.corrcoef&quot; is normalized.
+    if correlation:
+        H= np.corrcoef(normalized_data.T)
+    else:
+        H= np.cov(normalized_data.T)
+
+    # SVD decomposition : H = U S V
+    eigenvectors, eigenvalues, _ = np.linalg.svd(H)  
+    if sort:
+        sort = eigenvalues.argsort()[::-1]
+        eigenvalues = eigenvalues[sort]
+        eigenvectors = eigenvectors[:, sort]
+    return eigenvalues, eigenvectors
 </code></pre>
-<h1 id="kd-tree">Kd-tree</h1>
-<h1 id="octree">Octree</h1>
+<h1 id="get-3-feature-vectors-by-pca">get 3 feature vectors by PCA</h1>
+<p>In LiDAR cloud points, <strong>primary direction</strong> is the the eigen vector corresponds to the <strong>max</strong> eigen value, and the <strong>normal vector</strong> is the the eigen vector corresponds to the <strong>min</strong> eigen value.</p>
+<pre><code class="language-python">eigenVal, eigenVec = PCA(k_nearest_point)
+point_cloud_primary_vector = eigenVec[:, 0] 
+point_cloud_normal_vector = eigenVec[:, 2]
+print('for extracting ground plane normal, the normal vector is: ', point_cloud_normal_vector)
+</code></pre>
 
               </div>
               <div class="toc-container">
                 <ul class="markdownIt-TOC">
-<li><a href="#brute-force-search">Brute-force search</a></li>
-<li><a href="#kd-tree">Kd-tree</a></li>
-<li><a href="#octree">Octree</a></li>
+<li><a href="#for-a-point-point-get-all-neighbors-index-by-radius-search">for a point &quot;point&quot;, get all neighbors' index by radius search</a></li>
+<li><a href="#build-the-pca-function">build the PCA function</a></li>
+<li><a href="#get-3-feature-vectors-by-pca">get 3 feature vectors by PCA</a></li>
 </ul>
 
               </div>
@@ -123,9 +147,9 @@ scipy.spatial.KDTree</p>
         
           <div class="next-post">
             <div class="next">Next</div>
-            <a href="https://lhf2011.github.io/post/pca-for-normal-vector-estimation/">
+            <a href="https://lhf2011.github.io/post/ground-plane-segmentation/">
               <h3 class="post-title">
-                PCA for normal vector estimation
+                Ground plane segmentation(RANSAC) and clustering(DBSCAN)
               </h3>
             </a>
           </div>

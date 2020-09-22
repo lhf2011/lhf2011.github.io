@@ -1,0 +1,316 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Ground plane segmentation(RANSAC) and clustering(DBSCAN) | Gridea</title>
+<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1600745444740">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Ground plane segmentation(RANSAC) and clustering(DBSCAN) | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="Task
+Use KITTI 3D object detection dataset
+Remove the ground from the lidar points, visualize ground as blue
+Clustering ..." />
+    <meta name="keywords" content="DBSCAN,RANSAC,clustering,segmentation" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://lhf2011.github.io">
+  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1600745444740" alt="">
+  </a>
+  <h1 class="site-title">
+    Gridea
+  </h1>
+  <p class="site-description">
+    Be good. 
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          Index
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          Archives
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          Tags
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          About
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Ground plane segmentation(RANSAC) and clustering(DBSCAN)
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-09-19
+              </span>
+              <span>
+                5 min read
+              </span>
+              
+                <a href="https://lhf2011.github.io/tag/WyrkCjxDD/" class="post-tag">
+                  # DBSCAN
+                </a>
+              
+                <a href="https://lhf2011.github.io/tag/nPkQgxLTWv/" class="post-tag">
+                  # RANSAC
+                </a>
+              
+                <a href="https://lhf2011.github.io/tag/6PJoALOJq/" class="post-tag">
+                  # clustering
+                </a>
+              
+                <a href="https://lhf2011.github.io/tag/bbkQGI9MD/" class="post-tag">
+                  # segmentation
+                </a>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h1 id="task">Task</h1>
+<p>Use KITTI 3D object detection dataset<br>
+Remove the ground from the lidar points, visualize ground as blue<br>
+Clustering over the remaining points, visualize the clusters with random color</p>
+<h1 id="ransac-for-ground-segmentation">RANSAC for ground segmentation</h1>
+<p>RANSAC(RANdom SAmple Consensus) has a good performance only when the inlier ratio is good enough.</p>
+<h2 id="advantages">Advantages:</h2>
+<p>Works well in practice, even with low inlier ratio like 10%</p>
+<h2 id="disadvantages">Disadvantages:</h2>
+<p>Some hyperparameters like inlier threshold <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>τ</mi></mrow><annotation encoding="application/x-tex">\tau</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.1132em;">τ</span></span></span></span><br>
+Need lots of samples when inlier ratio is low</p>
+<p>It has 5 steps：</p>
+<h2 id="1-select-a-minimal-subset-of-samples">1, Select a minimal subset of samples</h2>
+<p>How many parameters to be fitted, then how many samples we choose.<br>
+In this task, 3 points are needed to fit a plane in 3D space, it needs to be satisfied that 3 points can determine a plane, they are not on the same line.</p>
+<h3 id="there-are-2-ways-to-decide-if-these-3-points-are-on-a-line">There are 2 ways to decide if these 3 points are on a line:</h3>
+<h3 id="11-full-rank">1.1, Full rank</h3>
+<pre><code class="language-python">while True:
+    sample_index= random.sample(range(sz),3)
+    p= data[sample_index,:]
+    if np.linalg.matrix_rank(p)==3:
+        break
+</code></pre>
+<h3 id="12-vector-relations">1.2, Vector relations</h3>
+<pre><code class="language-python"># 3 points make 2 vectors
+vector1= xyz[1,:] -xyz[0,:]
+vector2= xyz[2,:] -xyz[0,:]
+if not np.all(vector1):
+    print(&quot;will divide by zero&quot;,vector1)
+    return None
+dy1dy2 = vector2 / vector1
+# if the two vectors are collinear, their ratio on x, y, z will be the same
+if not ( (dy1dy2[0]!=dy1dy2[1]) or (dy1dy2[2]!=dy1dy2[1]) ):
+    return None
+</code></pre>
+<h2 id="2-solve-the-model">2, Solve the model</h2>
+<p>There are 2 ways to build a plane model based on the chosen 3 points: p1,p2,p3</p>
+<h3 id="21-pca">2.1, PCA</h3>
+<p>The eigenvector corresponding to the minimin eigenvalue, is the normal direction of the plane.</p>
+<h3 id="22-cross-product">2.2, Cross product</h3>
+<pre><code class="language-python">p12= p2-p1
+p13= p3-p1
+n=np.cross(p12,p13)
+n=n / np.linalg.norm(n) # normalized norm function
+</code></pre>
+<h3 id="23-tricks-to-fit-the-ground-plane-better">2.3, Tricks to fit the ground plane better</h3>
+<ol>
+<li>LiDAR sensor fixed at a constant hight of a vehicle, about 1.7m ~ 2m. Therefore, only points has 'z' at -2~-1.5 will be considered.</li>
+<li>Ground plane's norm close to the 'z' direction, therefore, the plane fitted by walls can be excluded.</li>
+<li>Subsection model. Divide the ground into zones and extract inliers for each zone, therefore the distant points can be detected correctly.</li>
+</ol>
+<h2 id="3-compute-error-function">3, Compute error function</h2>
+<p>In Eucledian space, calculate the distance to plane for every point.</p>
+<pre><code class="language-python">count = 0
+for point in data:
+    d = abs(np.dot((point-p1),n)) # n is the norm of the ground plane
+</code></pre>
+<h2 id="4-count-the-points-consistent-with-the-model">4, Count the points consistent with the model</h2>
+<p>The hyperparameter <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>τ</mi></mrow><annotation encoding="application/x-tex">\tau</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.43056em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.1132em;">τ</span></span></span></span> is the distance threshold for inlier.<br>
+Label the point as inlier when the distance less than the threshold. Otherwise, label the point as outlier when the distance larger than the threshold.</p>
+<h2 id="5-choose-the-model-with-most-inlier-points">5, Choose the model with most inlier points</h2>
+<p>Repeat steps 1~4 for N iterations and choose the optimum model.</p>
+<h3 id="51-how-to-set-the-iteration-times-n">5,1 How to set the iteration times N?</h3>
+<p>We can assign a iteration times by experience, or calculate the optimum iteration times based on statistics.<br>
+e: outlier ratio<br>
+s: number of points in a sample<br>
+p: confidence we get at least a good sample that is not outlier<br>
+The following fomula means repeat N times, so that with propability &quot;p&quot;, at least one random sample is free from outliers.<br>
+<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>N</mi><mo>=</mo><mfrac><mrow><mi>l</mi><mi>o</mi><mi>g</mi><mo>(</mo><mn>1</mn><mo>−</mo><mi>p</mi><mo>)</mo></mrow><mrow><mi>l</mi><mi>o</mi><mi>g</mi><mo>(</mo><mn>1</mn><mo>−</mo><mo>(</mo><mn>1</mn><mo>−</mo><mi>e</mi><msup><mo>)</mo><mi>s</mi></msup><mo>)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">N=\dfrac{log(1-p)}{log(1-(1-e)^s)}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.10903em;">N</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:2.363em;vertical-align:-0.936em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.427em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault">e</span><span class="mclose"><span class="mclose">)</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.590392em;"><span style="top:-2.9890000000000003em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathdefault mtight">s</span></span></span></span></span></span></span></span><span class="mclose">)</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">o</span><span class="mord mathdefault" style="margin-right:0.03588em;">g</span><span class="mopen">(</span><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault">p</span><span class="mclose">)</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.936em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span></span></span></span></p>
+<pre><code># suppose propability p=0.99，outlier_ratio=0.5,  s=3 for 3D plane model.
+iteration_num= math.ceil(math.log(1-0.99)/math.log(1-power(0.5,3)))
+</code></pre>
+<h3 id="52-how-to-stop-iteration-in-advance">5.2 How to stop iteration in advance?</h3>
+<p>When enough inlier points in this model.<br>
+<span class="katex"><span class="katex-mathml"><math><semantics><mrow><mfrac><mrow><mi>i</mi><mi>n</mi><mi>l</mi><mi>i</mi><mi>e</mi><mi>r</mi><mi>p</mi><mi>o</mi><mi>i</mi><mi>n</mi><mi>t</mi><mi>s</mi><mi>n</mi><mi>u</mi><mi>m</mi><mi>b</mi><mi>e</mi><mi>r</mi></mrow><mrow><mi>t</mi><mi>o</mi><mi>t</mi><mi>a</mi><mi>l</mi><mi>p</mi><mi>o</mi><mi>i</mi><mi>n</mi><mi>t</mi><mi>s</mi><mi>n</mi><mi>u</mi><mi>m</mi><mi>b</mi><mi>e</mi><mi>r</mi></mrow></mfrac><mo>⩾</mo><mrow><mn>1</mn><mo>−</mo><mi>e</mi></mrow></mrow><annotation encoding="application/x-tex">\dfrac{inlier points number}{total points number} \geqslant {1-e}</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:2.25188em;vertical-align:-0.8804400000000001em;"></span><span class="mord"><span class="mopen nulldelimiter"></span><span class="mfrac"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height:1.3714399999999998em;"><span style="top:-2.314em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">t</span><span class="mord mathdefault">o</span><span class="mord mathdefault">t</span><span class="mord mathdefault">a</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">p</span><span class="mord mathdefault">o</span><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span><span class="mord mathdefault">t</span><span class="mord mathdefault">s</span><span class="mord mathdefault">n</span><span class="mord mathdefault">u</span><span class="mord mathdefault">m</span><span class="mord mathdefault">b</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span></span></span><span style="top:-3.23em;"><span class="pstrut" style="height:3em;"></span><span class="frac-line" style="border-bottom-width:0.04em;"></span></span><span style="top:-3.677em;"><span class="pstrut" style="height:3em;"></span><span class="mord"><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span><span class="mord mathdefault" style="margin-right:0.01968em;">l</span><span class="mord mathdefault">i</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span><span class="mord mathdefault">p</span><span class="mord mathdefault">o</span><span class="mord mathdefault">i</span><span class="mord mathdefault">n</span><span class="mord mathdefault">t</span><span class="mord mathdefault">s</span><span class="mord mathdefault">n</span><span class="mord mathdefault">u</span><span class="mord mathdefault">m</span><span class="mord mathdefault">b</span><span class="mord mathdefault">e</span><span class="mord mathdefault" style="margin-right:0.02778em;">r</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height:0.8804400000000001em;"><span></span></span></span></span></span><span class="mclose nulldelimiter"></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel amsrm">⩾</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.72777em;vertical-align:-0.08333em;"></span><span class="mord"><span class="mord">1</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mbin">−</span><span class="mspace" style="margin-right:0.2222222222222222em;"></span><span class="mord mathdefault">e</span></span></span></span></span></p>
+<h3 id="53-how-to-refine-the-model">5.3 How to refine the model?</h3>
+<p>Run LSQ(Least SQuare) to refine the model after the model and inlier points are selected.</p>
+<h1 id="clustering-on-dbscan">Clustering on DBSCAN</h1>
+<p>After removing the points on ground plane, the points are sparse, in this situation, DBSCAN can be used to make clustering.</p>
+<h2 id="advantages-2">Advantages:</h2>
+<p>It not require to specify the number of clusters.</p>
+<h2 id="algorithm-flow">Algorithm flow</h2>
+<p>DBSCAN(Density-based spatial clustering of applications with noise) is a data clustering algorithm, it groups points with many nearby neighbors, and marking points in low density regions as outliers. In DBSCAN, points are classified as core points, reachable points and outliers.</p>
+<pre><code>findNeigborsInDist(point, distTh)
+{
+    neighbors=point.KDTree(distTh)
+    return neighbors, sizeof(neighbors)
+}    
+for point in unvisitedPoints:
+    neiPoints, nums = findNeigborsInDist(point, distThreshold)
+    if nums &lt; numsThreshold:
+        label all the points in neiPoints as outliers
+    else
+        label all the points in neiPoints as corepoints
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#task">Task</a></li>
+<li><a href="#ransac-for-ground-segmentation">RANSAC for ground segmentation</a>
+<ul>
+<li><a href="#advantages">Advantages:</a></li>
+<li><a href="#disadvantages">Disadvantages:</a></li>
+<li><a href="#1-select-a-minimal-subset-of-samples">1, Select a minimal subset of samples</a>
+<ul>
+<li><a href="#there-are-2-ways-to-decide-if-these-3-points-are-on-a-line">There are 2 ways to decide if these 3 points are on a line:</a></li>
+<li><a href="#11-full-rank">1.1, Full rank</a></li>
+<li><a href="#12-vector-relations">1.2, Vector relations</a></li>
+</ul>
+</li>
+<li><a href="#2-solve-the-model">2, Solve the model</a>
+<ul>
+<li><a href="#21-pca">2.1, PCA</a></li>
+<li><a href="#22-cross-product">2.2, Cross product</a></li>
+<li><a href="#23-tricks-to-fit-the-ground-plane-better">2.3, Tricks to fit the ground plane better</a></li>
+</ul>
+</li>
+<li><a href="#3-compute-error-function">3, Compute error function</a></li>
+<li><a href="#4-count-the-points-consistent-with-the-model">4, Count the points consistent with the model</a></li>
+<li><a href="#5-choose-the-model-with-most-inlier-points">5, Choose the model with most inlier points</a>
+<ul>
+<li><a href="#51-how-to-set-the-iteration-times-n">5,1 How to set the iteration times N?</a></li>
+<li><a href="#52-how-to-stop-iteration-in-advance">5.2 How to stop iteration in advance?</a></li>
+<li><a href="#53-how-to-refine-the-model">5.3 How to refine the model?</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#clustering-on-dbscan">Clustering on DBSCAN</a>
+<ul>
+<li><a href="#advantages-2">Advantages:</a></li>
+<li><a href="#algorithm-flow">Algorithm flow</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">Next</div>
+            <a href="https://lhf2011.github.io/post/lidar-feature-detection/">
+              <h3 class="post-title">
+                LiDAR feature detection
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://lhf2011.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

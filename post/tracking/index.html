@@ -2,11 +2,11 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>tracking | Gridea</title>
-<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1601246891252">
+<title>tracking motion objects | Gridea</title>
+<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1601247111477">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="tracking | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="tracking motion objects | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
@@ -15,7 +15,7 @@
 As  the vehicle is moving forward, at the speed of v.
 [xy]=[cosθ−sinθ−cosθsinθcosθsinθ][xyv∗Δt] \left[
  \begin{..." />
-    <meta name="keywords" content="" />
+    <meta name="keywords" content="Tracking,Kalman Filter" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
   </head>
@@ -24,7 +24,7 @@ As  the vehicle is moving forward, at the speed of v.
       <div class="main-content">
         <div class="site-header">
   <a href="https://lhf2011.github.io">
-  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1601246891252" alt="">
+  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1601247111477" alt="">
   </a>
   <h1 class="site-title">
     Gridea
@@ -77,15 +77,23 @@ As  the vehicle is moving forward, at the speed of v.
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              tracking
+              tracking motion objects
             </h2>
             <div class="post-info">
               <span>
-                2020-09-24
+                2020-09-23
               </span>
               <span>
-                9 min read
+                8 min read
               </span>
+              
+                <a href="https://lhf2011.github.io/tag/Sb_TOJEyQ/" class="post-tag">
+                  # Tracking
+                </a>
+              
+                <a href="https://lhf2011.github.io/tag/E06KohtMe_/" class="post-tag">
+                  # Kalman Filter
+                </a>
               
             </div>
             
@@ -149,35 +157,6 @@ angular velocity: <span class="katex"><span class="katex-mathml"><math><semantic
     SimMesure(4) = m_stTracker.m_fWidth;
     SimMesure(5) = m_stTracker.m_fLength;
 </code></pre>
-<h2 id="calc-relate-value">calc relate value</h2>
-<h3 id="for-mobileye-and-surround-view-cameras">For Mobileye and surround-view-cameras</h3>
-<pre><code class="language-c++">double PosXscore = PercentScore( DeltaPosX, DeltaPosX_TH );
-double PosYscore = PercentScore( DeltaPosY, DeltaPosY_TH );
-double VelXscore = PercentScore( DeltaVelX, DeltaVelX_TH );
-double VelYscore = PercentScore( DeltaVelY, DeltaVelY_TH );
-double Widtscore = PercentScore( DeltaWidt, DeltaWidt_TH );
-if( m_gstTrkSta[MobileyeTracked].bTracked )
-    double Total = PosXscore * 0.2f + PosYscore * 0.4f + VelXscore * 0.1f + VelYscore * 0.1f +Widtscore * 0.2f;
-else
-    double Total = PosXscore * 0.2 + PosYscore * 0.4 + VelXscore * 0.2 + VelYscore * 0.2;
-return      Total;
-</code></pre>
-<h3 id="for-mwr">For MWR</h3>
-<p>MWR do not measure width</p>
-<pre><code class="language-c++">double DeltaPosX = fabs( SimMeasurement( PosX_CORR ) - object.fRelX );
-double DeltaPosY = fabs( SimMeasurement( PosY_CORR ) - object.fRelY );
-double DeltaVelX = fabs( SimMeasurement( VelX_CORR ) - object.fAblVelX );
-double DeltaVelY = fabs( SimMeasurement( VelY_CORR ) - object.fAblVelY );
-double Total = PosXscore * 0.3 + PosYscore * 0.1 + VelXscore * 0.4 + VelYscore * 0.2;
-return      Total;
-</code></pre>
-<h3 id="for-hdmap">For HDmap</h3>
-<p>HDmap do not measure moving objects, only has x &amp; y</p>
-<pre><code class="language-c++">double DeltaPosX = fabs( SimMeasurement( PosX_CORR ) - object.fRelX );
-double DeltaPosY = fabs( SimMeasurement( PosY_CORR ) - object.fRelY );
-double Total = PosXscore * 0.6 + PosYscore * 0.4;
-return      Total;
-</code></pre>
 <h2 id="initialize-tracker">Initialize tracker</h2>
 <pre><code class="language-c++">void CTracker::InitializeTracker (const CUnifiedObject &amp;object, const int16_t ID, const CTransform &amp;Transform)
 {
@@ -220,10 +199,10 @@ return      Total;
 <pre><code class="language-c++">PosinV&lt;&lt; object.fRelX, object.fRelY;
 PosinW = TransformPoint_2D( PosinV, Transform.m_stTransformVehicle2World);m_gstTrkSta[TrkedStaIndex].stAbsPosition.x = PosinW(0);
 m_gstTrkSta[TrkedStaIndex].stAbsPosition.y = PosinW(1);
-UpdateTrackerBy_** ( object, Transform );
+UpdateTrackerBy_*** ( object, Transform );
 TrajectoryRecorder(Transform);
 </code></pre>
-<h2 id="update-tracker-by">update tracker by ***</h2>
+<h2 id="update-tracker-by-sensor">update tracker by *** sensor</h2>
 <pre><code class="language-c++">m_stTracker.stKalman.ProcessMeasurement(measurePkg, Transform);
 </code></pre>
 <h2 id="kalman">Kalman</h2>
@@ -378,17 +357,10 @@ Eigen::MatrixXd m_matH(6,6);
 <li><a href="#position">position</a></li>
 <li><a href="#velocity">velocity</a></li>
 <li><a href="#tracker-features">tracker features</a></li>
-<li><a href="#calc-relate-value">calc relate value</a>
-<ul>
-<li><a href="#for-mobileye-and-surround-view-cameras">For Mobileye and surround-view-cameras</a></li>
-<li><a href="#for-mwr">For MWR</a></li>
-<li><a href="#for-hdmap">For HDmap</a></li>
-</ul>
-</li>
 <li><a href="#initialize-tracker">Initialize tracker</a></li>
 <li><a href="#erase-a-tracker">Erase a tracker</a></li>
 <li><a href="#update-tracker">Update tracker</a></li>
-<li><a href="#update-tracker-by">update tracker by ***</a></li>
+<li><a href="#update-tracker-by-sensor">update tracker by *** sensor</a></li>
 <li><a href="#kalman">Kalman</a>
 <ul>
 <li><a href="#kalmanpredictdouble-delta_t">Kalman::Predict(double delta_t)</a></li>

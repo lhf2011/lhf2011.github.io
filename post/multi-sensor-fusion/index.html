@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Multi-sensor fusion | Gridea</title>
-<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1601260071246">
+<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1601260191123">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="Multi-sensor fusion | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
@@ -23,7 +23,7 @@ double PosXscore = PercentScore( DeltaPosX, DeltaPosX_TH )..." />
       <div class="main-content">
         <div class="site-header">
   <a href="https://lhf2011.github.io">
-  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1601260071246" alt="">
+  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1601260191123" alt="">
   </a>
   <h1 class="site-title">
     Gridea
@@ -80,7 +80,7 @@ double PosXscore = PercentScore( DeltaPosX, DeltaPosX_TH )..." />
             </h2>
             <div class="post-info">
               <span>
-                2020-09-23
+                2020-09-22
               </span>
               <span>
                 6 min read
@@ -141,7 +141,7 @@ else
 <h3 id="31-nearest-neighbor-algorithm">3.1 Nearest Neighbor Algorithm</h3>
 <p>Get maximum association value from the data association matrix, and label the corresponding row and column as associated. If the object and the tracker is associated, the corresponding row and column is set to -1.0f.</p>
 <h3 id="32-auction-algorithm">3.2 Auction Algorithm</h3>
-<img src="../../post-images/20200927_auction algorithm.jpg" width="300" height="300" align=center />
+<img src="../../post-images/20200927_auction algorithm.jpg" width="400" height="400" align=center />
 <h3 id="33-hungarian-algorithm">3.3 Hungarian Algorithm</h3>
 <p>A combinatorial optimization algorithm for assignment problem. For a correlation matrix</p>
 <p class='katex-block'><span class="katex-display"><span class="katex"><span class="katex-mathml"><math><semantics><mrow><mo fence="true">[</mo><mtable><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>a</mi><mn>1</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>a</mi><mn>2</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>a</mi><mn>3</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>a</mi><mn>4</mn></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>b</mi><mn>1</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>b</mi><mn>2</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>b</mi><mn>3</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>b</mi><mn>4</mn></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>c</mi><mn>1</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>c</mi><mn>2</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>c</mi><mn>3</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>c</mi><mn>4</mn></msub></mstyle></mtd></mtr><mtr><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>d</mi><mn>1</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>d</mi><mn>2</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>d</mi><mn>3</mn></msub></mstyle></mtd><mtd><mstyle scriptlevel="0" displaystyle="false"><msub><mi>d</mi><mn>4</mn></msub></mstyle></mtd></mtr></mtable><mo fence="true">]</mo></mrow><annotation encoding="application/x-tex"> \left[
@@ -176,9 +176,9 @@ Secondly, for each col who doesn't has 0, find the smallest value; every value i
 <p>Thirdly, cross out the row and the col where 0 located, use as few lines as possible to cover all '0'.</p>
 <p>Forthly, do the next step for the values who has not been crossed out.<br>
 Find the smallest in all uncrossed values, they all minus the smallest value. For the value who has been crossed 2 times, add this smallest value.</p>
-<img src="../../post-images/Hungarian algorithm.jpg" width="150" height="300" align=center />
+<img src="../../post-images/Hungarian algorithm.jpg" width="300" height="150" align=center />
 <img src="../../post-images/Hungarian algorithm2.jpg" width="150" height="150" align=center />
-<img src="../../post-images/Hungarian algorithm3.jpg" width="150" height="300" align=center />
+<img src="../../post-images/Hungarian algorithm3.jpg" width="300" height="150" align=center />
 <p><a href="https://github.com/huangfcn/multiple-object-tracking/blob/master/trackers/hungarian/hungarian.cpp">open source code 1</a><br>
 <a href="https://github.com/Smorodov/Multitarget-tracker/blob/master/src/Tracker/HungarianAlg/HungarianAlg.cpp">open source code 2</a></p>
 <h1 id="4-dempstershafer-theory">4, Dempster/Shafer theory</h1>

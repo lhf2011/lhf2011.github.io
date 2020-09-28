@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2020-09-28T03:54:32.358Z</updated>
+    <updated>2020-09-28T03:58:16.811Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -278,11 +278,53 @@ Eigen::MatrixXd m_matH(6,6);
 ]]></content>
     </entry>
     <entry>
+        <title type="html"><![CDATA[PCA for normal vector estimation]]></title>
+        <id>https://lhf2011.github.io/post/pca-for-normal-vector-estimation/</id>
+        <link href="https://lhf2011.github.io/post/pca-for-normal-vector-estimation/">
+        </link>
+        <updated>2020-09-21T15:16:45.000Z</updated>
+        <content type="html"><![CDATA[<p>In the work of cloud point processing, PCA are usually used to extract the normal vector of a plane, such as a wall, or the ground plane.</p>
+<p>For the normal vector, it is the eigen vector corresponds to the  <strong>minimum</strong> eigen value after PCA.</p>
+<h1 id="for-a-point-point-get-all-neighbors-index-by-radius-search">for a point &quot;point&quot;, get all neighbors' index by radius search</h1>
+<pre><code class="language-python">    radius= 100
+    [_, idx, _] = pcd_tree.search_radius_vector_3d(point_cloud_o3d.points[point], radius)
+    k_nearest_point = np.asarray(point_cloud_o3d.points)[idx, :]
+</code></pre>
+<h1 id="build-the-pca-function">build the PCA function</h1>
+<pre><code class="language-python">def PCA(k_nearest_point, correlation=False, sort=True):
+    data_mean = np.mean(k_nearest_point, axis=0) 
+    normalize_data = k_nearest_point - data_mean  # normalize
+
+    # H is the covariance matrix = np.dot(normalize_data.T, normalize_data) 
+    # The difference of &quot;np.corrcoef&quot; and &quot;np.cov&quot;: The H matrix after &quot;np.corrcoef&quot; is normalized.
+    if correlation:
+        H= np.corrcoef(normalized_data.T)
+    else:
+        H= np.cov(normalized_data.T)
+
+    # SVD decomposition : H = U S V
+    eigenvectors, eigenvalues, _ = np.linalg.svd(H)  
+    if sort:
+        sort = eigenvalues.argsort()[::-1]
+        eigenvalues = eigenvalues[sort]
+        eigenvectors = eigenvectors[:, sort]
+    return eigenvalues, eigenvectors
+</code></pre>
+<h1 id="get-3-feature-vectors-by-pca">get 3 feature vectors by PCA</h1>
+<p>In LiDAR cloud points, <strong>primary direction</strong> is the the eigen vector corresponds to the <strong>max</strong> eigen value, and the <strong>normal vector</strong> is the the eigen vector corresponds to the <strong>min</strong> eigen value.</p>
+<pre><code class="language-python">eigenVal, eigenVec = PCA(k_nearest_point)
+point_cloud_primary_vector = eigenVec[:, 0] 
+point_cloud_normal_vector = eigenVec[:, 2]
+print('for extracting ground plane normal, the normal vector is: ', point_cloud_normal_vector)
+</code></pre>
+]]></content>
+    </entry>
+    <entry>
         <title type="html"><![CDATA[Multi-sensor fusion]]></title>
         <id>https://lhf2011.github.io/post/multi-sensor-fusion/</id>
         <link href="https://lhf2011.github.io/post/multi-sensor-fusion/">
         </link>
-        <updated>2020-09-21T22:50:32.000Z</updated>
+        <updated>2020-09-21T10:50:32.000Z</updated>
         <content type="html"><![CDATA[<h1 id="1-calcrelatevalue">1, CalcRelateValue</h1>
 <h3 id="11-for-mobileye-and-surround-view-cameras">1.1 For Mobileye and surround-view-cameras</h3>
 <pre><code class="language-c++">double PosXscore = PercentScore( DeltaPosX, DeltaPosX_TH );
@@ -513,48 +555,6 @@ step5: find the minimum value in col -&gt; 'h', and subtract h from each uncover
     return (FRAME_DISCERNMENT)nMaxScoreIndex;
 else
     return ANY;
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[PCA for normal vector estimation]]></title>
-        <id>https://lhf2011.github.io/post/pca-for-normal-vector-estimation/</id>
-        <link href="https://lhf2011.github.io/post/pca-for-normal-vector-estimation/">
-        </link>
-        <updated>2020-09-21T15:16:45.000Z</updated>
-        <content type="html"><![CDATA[<p>In the work of cloud point processing, PCA are usually used to extract the normal vector of a plane, such as a wall, or the ground plane.</p>
-<p>For the normal vector, it is the eigen vector corresponds to the  <strong>minimum</strong> eigen value after PCA.</p>
-<h1 id="for-a-point-point-get-all-neighbors-index-by-radius-search">for a point &quot;point&quot;, get all neighbors' index by radius search</h1>
-<pre><code class="language-python">    radius= 100
-    [_, idx, _] = pcd_tree.search_radius_vector_3d(point_cloud_o3d.points[point], radius)
-    k_nearest_point = np.asarray(point_cloud_o3d.points)[idx, :]
-</code></pre>
-<h1 id="build-the-pca-function">build the PCA function</h1>
-<pre><code class="language-python">def PCA(k_nearest_point, correlation=False, sort=True):
-    data_mean = np.mean(k_nearest_point, axis=0) 
-    normalize_data = k_nearest_point - data_mean  # normalize
-
-    # H is the covariance matrix = np.dot(normalize_data.T, normalize_data) 
-    # The difference of &quot;np.corrcoef&quot; and &quot;np.cov&quot;: The H matrix after &quot;np.corrcoef&quot; is normalized.
-    if correlation:
-        H= np.corrcoef(normalized_data.T)
-    else:
-        H= np.cov(normalized_data.T)
-
-    # SVD decomposition : H = U S V
-    eigenvectors, eigenvalues, _ = np.linalg.svd(H)  
-    if sort:
-        sort = eigenvalues.argsort()[::-1]
-        eigenvalues = eigenvalues[sort]
-        eigenvectors = eigenvectors[:, sort]
-    return eigenvalues, eigenvectors
-</code></pre>
-<h1 id="get-3-feature-vectors-by-pca">get 3 feature vectors by PCA</h1>
-<p>In LiDAR cloud points, <strong>primary direction</strong> is the the eigen vector corresponds to the <strong>max</strong> eigen value, and the <strong>normal vector</strong> is the the eigen vector corresponds to the <strong>min</strong> eigen value.</p>
-<pre><code class="language-python">eigenVal, eigenVec = PCA(k_nearest_point)
-point_cloud_primary_vector = eigenVec[:, 0] 
-point_cloud_normal_vector = eigenVec[:, 2]
-print('for extracting ground plane normal, the normal vector is: ', point_cloud_normal_vector)
 </code></pre>
 ]]></content>
     </entry>

@@ -1,0 +1,451 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Install Tensorflow and PyTorch on PN50 | Gridea</title>
+<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1603220117857">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="Install Tensorflow and PyTorch on PN50 | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="CPU: AMD Ryzen 4500U
+GPU: AMD Vega 6
+OS: Ubuntu18.04
+1, ROCm Installation
+1.1 Run the following code to ensure that your..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://lhf2011.github.io">
+  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1603220117857" alt="">
+  </a>
+  <h1 class="site-title">
+    Gridea
+  </h1>
+  <p class="site-description">
+    Be good. 
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          Index
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          Archives
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          Tags
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          About
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              Install Tensorflow and PyTorch on PN50
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-10-19
+              </span>
+              <span>
+                7 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <p>CPU: AMD Ryzen 4500U<br>
+GPU: AMD Vega 6<br>
+OS: Ubuntu18.04</p>
+<h1 id="1-rocm-installation">1, ROCm Installation</h1>
+<h3 id="11-run-the-following-code-to-ensure-that-your-system-is-up-to-date">1.1 Run the following code to ensure that your system is up to date</h3>
+<pre><code class="language-python">sudo apt update
+sudo apt dist-upgrade
+sudo apt install libnuma-dev
+sudo reboot
+</code></pre>
+<h3 id="12-add-the-rocm-apt-repository">1.2 Add the ROCm apt repository</h3>
+<pre><code class="language-python">wget -q -O - http://repo.radeon.com/rocm/rocm.gpg.key | sudo apt-key add -
+</code></pre>
+<pre><code class="language-python">echo 'deb [arch=amd64] http://repo.radeon.com/rocm/apt/debian/ xenial main' | sudo tee /etc/apt/sources.list.d/rocm.list
+</code></pre>
+<h3 id="13-install-the-rocm-meta-package">1.3 Install the ROCm meta-package</h3>
+<pre><code class="language-python">sudo apt update
+sudo apt install rocm-dkms &amp;&amp; sudo reboot
+</code></pre>
+<h3 id="14-set-permissions">1.4 Set permissions</h3>
+<pre><code class="language-python">sudo usermod -a -G video user
+</code></pre>
+<pre><code class="language-python">sudo groupadd render
+sudo usermod -a -G render user
+</code></pre>
+<pre><code class="language-python">echo 'ADD_EXTRA_GROUPS=1' | sudo tee -a /etc/adduser.conf
+echo 'EXTRA_GROUPS=video' | sudo tee -a /etc/adduser.conf
+echo 'EXTRA_GROUPS=render' | sudo tee -a /etc/adduser.conf
+</code></pre>
+<h3 id="15-add-the-rocm-binaries-in-your-path">1.5 Add the ROCm binaries in your PATH</h3>
+<pre><code class="language-python">echo 'export PATH=$PATH:/opt/rocm/bin:/opt/rocm/profiler/bin:/opt/rocm/opencl/bin' | sudo tee -a /etc/profile.d/rocm.sh
+</code></pre>
+<h3 id="16-restart-the-system">1.6 Restart the system</h3>
+<h3 id="17-verify-that-the-rocm-installation">1.7 verify that the ROCm installation</h3>
+<pre><code class="language-python">/opt/rocm/bin/rocminfo
+</code></pre>
+<pre><code class="language-python">/opt/rocm/opencl/bin/clinfo
+</code></pre>
+<h1 id="2-tensorflow-installation">2, TensorFLow Installation</h1>
+<h3 id="21-install-relative-packages">2.1 Install relative packages</h3>
+<pre><code class="language-python">sudo apt update
+sudo apt install rocm-libs miopen-hip rccl
+</code></pre>
+<h3 id="22-install-tensorflow">2.2 Install TensorFlow</h3>
+<pre><code class="language-python">sudo apt install wget python3-pip
+pip3 install --user tensorflow-rocm
+</code></pre>
+<h3 id="23-install-miopen">2.3 Install miopen</h3>
+<pre><code class="language-python">sudo apt-get install miopengemm miopen-hip
+</code></pre>
+<h3 id="24-test-on-tensorflow-can-skip">2.4 Test on tensorflow (can skip)</h3>
+<h4 id="241-build-a-python-script-file-testpy-the-contents-as-follows">2.4.1 Build a python script file &quot;test.py&quot;, the contents as follows:</h4>
+<pre><code class="language-python">import tensorflow.compat.v1 as tf
+tf.compat.v1.disable_eager_execution()
+hello = tf.constant('Hello, TensorFlow!')
+sess = tf.compat.v1.Session()
+sess.run(hello)
+b = tf.constant(32)
+sess.run(b+b)
+sess.close()
+</code></pre>
+<h4 id="242-test">2.4.2 Test</h4>
+<pre><code class="language-python">python3 test.py
+</code></pre>
+<p>If the test result is:</p>
+<pre><code class="language-python">b'Hello, TensorFlow!'
+64
+</code></pre>
+<p>Means the tensorflow install success.</p>
+<h3 id="25-test-on-opencl-c-examples-can-skip">2.5 Test on Opencl C++ examples (can skip)</h3>
+<h4 id="251-add-the-rocm-in-your-path">2.5.1 Add the ROCm in your PATH</h4>
+<pre><code class="language-shell">echo 'export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/opt/rocm/opencl/lib/' &gt;&gt; ~/.bashrc
+echo 'export LIBRARY_PATH=$LIBRARY_PATH:/opt/rocm/opencl/lib/' &gt;&gt; ~/.bashrc
+sudo scp -r /opt/rocm-3.8.0/opencl/include/CL/ /usr/local/include/
+</code></pre>
+<h4 id="252-download-the-source-code">2.5.2 Download the source code</h4>
+<p><a href="https://github.com/Dakkers/OpenCL-examples">source code</a><br>
+The test code is the file in /OpenCL-examples/example01/</p>
+<h4 id="253-change-the-source-code">2.5.3 Change the source code</h4>
+<p>Add a row in /usr/local/include/CL/cl_version.h:</p>
+<pre><code class="language-c++">#define CL_TARGET_OPENCL_VERSION 200
+</code></pre>
+<p>Change the device ID in code “/OpenCL-examples/example01/main.cpp&quot; from 1 to 0</p>
+<pre><code class="language-c++">cl::Device default_device=all_devices[0];
+</code></pre>
+<h4 id="254-test">2.5.4 Test</h4>
+<p>In the direction: user@pn50n1:~/Downloads/OpenCL-examples/example01</p>
+<pre><code class="language-shell">g++ -std=c++0x main.cpp -o main.out -lOpenCL    
+</code></pre>
+<pre><code class="language-shell">./main.out
+</code></pre>
+<p>The performance of CPU and GPU will be shown in the print.</p>
+<h3 id="26-test-on-tensorflow-benchmark-can-skip">2.6 Test on Tensorflow benchmark (can skip)</h3>
+<h4 id="261-download-code">2.6.1 Download code</h4>
+<p><a href="https://github.com/tensorflow/benchmarks">source code</a></p>
+<h4 id="262-change-the-source-code">2.6.2 Change the source code</h4>
+<p>In file “benchmark_cnn.py”, add a row at the 749 row:</p>
+<pre><code class="language-python">config.gpu_options.per_process_gpu_memory_fraction = 0.8
+</code></pre>
+<p>In direction &quot;/opt/rocm-3.8.0/miopen/share/miopen/db&quot;, copy a file:</p>
+<pre><code class="language-python">sudo cp gfx900_56.HIP.fdb.txt gfx900_26.HIP.fdb.txt
+</code></pre>
+<h4 id="263-only-runs-on-cpu">2.6.3 Only runs on CPU</h4>
+<p>In direction&quot;~/Downloads/benchmarks/scripts/tf_cnn_benchmarks&quot;</p>
+<pre><code class="language-shell">python3 tf_cnn_benchmarks.py --num_gpus=0 --batch_size=32 --model=resnet50 --variable_update=parameter_server --device=cpu --data_format=NHWC
+</code></pre>
+<pre><code class="language-shell">python3 tf_cnn_benchmarks.py --num_gpus=0 --batch_size=32 --model=googlenet --variable_update=parameter_server --device=cpu --data_format=NHWC
+</code></pre>
+<h4 id="264-hybrid-of-cpu-and-gpu">2.6.4 Hybrid of CPU and GPU</h4>
+<p>Only resnet50 and googlenet can be support, but the batch_size should be &quot;1&quot;.</p>
+<pre><code class="language-shell">python3 tf_cnn_benchmarks.py --num_gpus=1 --batch_size=1 --model=resnet50 --variable_update=parameter_server
+</code></pre>
+<pre><code class="language-shell">python3 tf_cnn_benchmarks.py --num_gpus=1 --batch_size=1 --model=googlenet --variable_update=parameter_server
+</code></pre>
+<h1 id="3-docker-installation">3, Docker Installation</h1>
+<h3 id="31-install-relative-packages">3.1 Install relative packages</h3>
+<pre><code class="language-python">sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg-agent \
+    software-properties-common
+</code></pre>
+<h3 id="32-add-dockers-official-gpg-key">3.2 Add Docker's official GPG key</h3>
+<pre><code>curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+</code></pre>
+<h3 id="33-set-up-the-stable-repository">3.3 Set up the stable repository</h3>
+<pre><code>sudo add-apt-repository \
+  &quot;deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) \
+  stable&quot;
+</code></pre>
+<h3 id="34-install-docker-engine">3.4 Install Docker Engine</h3>
+<pre><code>sudo apt-get update
+sudo apt-get install docker-ce docker-ce-cli containerd.io
+</code></pre>
+<h3 id="35-verify-docker-engine">3.5 Verify Docker Engine</h3>
+<pre><code>sudo docker run hello-world
+</code></pre>
+<h1 id="4-pytorch-installation">4, PyTorch Installation</h1>
+<h3 id="41-obtain-docker-image">4.1 Obtain docker image</h3>
+<pre><code>sudo docker pull rocm/pytorch:rocm3.8_ubuntu18.04_py3.6_pytorch
+</code></pre>
+<h3 id="42-start-a-docker-container">4.2 Start a docker container</h3>
+<pre><code>sudo docker run -it -v /opt/containerd:/data --privileged --device=/dev/kfd --device=/dev/dri --group-add video rocm/pytorch:rocm3.8_ubuntu18.04_py3.6_pytorch
+</code></pre>
+<pre><code>sudo apt install ninja-build
+</code></pre>
+<h3 id="43-pytorch-test-suggest-skip-the-limited-gpu-memory-cause-crash">4.3 Pytorch test (suggest skip, the limited GPU memory cause crash)</h3>
+<pre><code>PYTORCH_TEST_WITH_ROCM=1 python3.6 test/run_test.py --verbose
+</code></pre>
+<h3 id="44-install-torchvision">4.4 Install torchvision</h3>
+<pre><code>pip install torchvision
+</code></pre>
+<h1 id="5-monodepth2-on-pytorch">5, monodepth2 on pyTorch</h1>
+<h3 id="51-download-source-code">5.1 Download source code</h3>
+<p><a href="https://github.com/nianticlabs/monodepth2">source code</a><br>
+GitLab: monodepth2_pytorch project</p>
+<h3 id="52-the-first-time">5.2 The first time</h3>
+<h4 id="521-find-the-existing-docker">5.2.1 Find the existing docker</h4>
+<pre><code>sudo docker ps -aq
+</code></pre>
+<p>The above command will return your docker ID. Mine is &quot;6ffacbcb6331&quot;, you should replace it in next steps.</p>
+<h4 id="522-get-the-dockers-name">5.2.2 Get the docker's name</h4>
+<pre><code>sudo docker inspect -f '{{.Id}}' 6ffacbcb6331
+</code></pre>
+<p>The above command will return your docker's name.<br>
+Mine is &quot;6ffacbcb6331f43bf63257d333e415f1ef37c20a48c019f537daf9dbd8e1b4ea&quot;,<br>
+you should replace your's in the next command.</p>
+<h4 id="523-upload-the-source-code-to-docker">5.2.3 Upload the source code to docker</h4>
+<p>In the direction of your download code &quot;user@pn50n1:~/Downloads&quot;, copy the source code fold &quot;monodepth2&quot; to the &quot;/root/&quot; directory in docker. You can also copy files from docker to your computer, just by changing the order of source and target.</p>
+<pre><code>sudo docker cp monodepth2 6ffacbcb6331f43bf63257d333e415f1ef37c20a48c019f537daf9dbd8e1b4ea:/root/
+</code></pre>
+<h3 id="53-test-monodepth2">5.3 Test Monodepth2</h3>
+<h4 id="531-find-the-existing-docker">5.3.1 Find the existing docker</h4>
+<pre><code>sudo docker ps -aq
+</code></pre>
+<h4 id="532-active-the-existing-docker">5.3.2 Active the existing docker</h4>
+<p>Please replace the docker ID &quot;6ffacbcb6331&quot; with yours.</p>
+<pre><code>sudo docker start 6ffacbcb6331
+</code></pre>
+<h4 id="533-enter-the-docker">5.3.3 Enter the docker</h4>
+<pre><code>sudo docker exec -it 6ffacbcb6331 /bin/bash
+</code></pre>
+<p>You will be in the directory of &quot;~/pytorch&quot;, you should left this directory to use pytorch, like:</p>
+<pre><code>cd /root/monodepth2
+</code></pre>
+<h4 id="534-convert-the-image-into-video">5.3.4 convert the image into video</h4>
+<p>In the direction of &quot;root@6ffacbcb6331:~/monodepth2&quot;</p>
+<pre><code>python image2video.py
+</code></pre>
+<h4 id="535-test-monodepth2-on-cpu">5.3.5 Test Monodepth2 on CPU</h4>
+<pre><code>time python test_simple_video.py --no_cuda --image_path /root/monodepth2/assets/data_road/testing/image_2/ --ext png --model_name mono+stereo_640x192
+</code></pre>
+<h4 id="536-test-monodepth2-on-gpu">5.3.6 Test Monodepth2 on GPU</h4>
+<pre><code>time python test_simple_video.py --image_path /root/monodepth2/assets/data_road/testing/image_2/ --ext png --model_name mono+stereo_640x192
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#1-rocm-installation">1, ROCm Installation</a><br>
+*
+<ul>
+<li><a href="#11-run-the-following-code-to-ensure-that-your-system-is-up-to-date">1.1 Run the following code to ensure that your system is up to date</a></li>
+<li><a href="#12-add-the-rocm-apt-repository">1.2 Add the ROCm apt repository</a></li>
+<li><a href="#13-install-the-rocm-meta-package">1.3 Install the ROCm meta-package</a></li>
+<li><a href="#14-set-permissions">1.4 Set permissions</a></li>
+<li><a href="#15-add-the-rocm-binaries-in-your-path">1.5 Add the ROCm binaries in your PATH</a></li>
+<li><a href="#16-restart-the-system">1.6 Restart the system</a></li>
+<li><a href="#17-verify-that-the-rocm-installation">1.7 verify that the ROCm installation</a></li>
+</ul>
+</li>
+<li><a href="#2-tensorflow-installation">2, TensorFLow Installation</a><br>
+*
+<ul>
+<li><a href="#21-install-relative-packages">2.1 Install relative packages</a></li>
+<li><a href="#22-install-tensorflow">2.2 Install TensorFlow</a></li>
+<li><a href="#23-install-miopen">2.3 Install miopen</a></li>
+<li><a href="#24-test-on-tensorflow-can-skip">2.4 Test on tensorflow (can skip)</a>
+<ul>
+<li><a href="#241-build-a-python-script-file-testpy-the-contents-as-follows">2.4.1 Build a python script file &quot;test.py&quot;, the contents as follows:</a></li>
+<li><a href="#242-test">2.4.2 Test</a></li>
+</ul>
+</li>
+<li><a href="#25-test-on-opencl-c-examples-can-skip">2.5 Test on Opencl C++ examples (can skip)</a>
+<ul>
+<li><a href="#251-add-the-rocm-in-your-path">2.5.1 Add the ROCm in your PATH</a></li>
+<li><a href="#252-download-the-source-code">2.5.2 Download the source code</a></li>
+<li><a href="#253-change-the-source-code">2.5.3 Change the source code</a></li>
+<li><a href="#254-test">2.5.4 Test</a></li>
+</ul>
+</li>
+<li><a href="#26-test-on-tensorflow-benchmark-can-skip">2.6 Test on Tensorflow benchmark (can skip)</a>
+<ul>
+<li><a href="#261-download-code">2.6.1 Download code</a></li>
+<li><a href="#262-change-the-source-code">2.6.2 Change the source code</a></li>
+<li><a href="#263-only-runs-on-cpu">2.6.3 Only runs on CPU</a></li>
+<li><a href="#264-hybrid-of-cpu-and-gpu">2.6.4 Hybrid of CPU and GPU</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#3-docker-installation">3, Docker Installation</a><br>
+*
+<ul>
+<li><a href="#31-install-relative-packages">3.1 Install relative packages</a></li>
+<li><a href="#32-add-dockers-official-gpg-key">3.2 Add Docker's official GPG key</a></li>
+<li><a href="#33-set-up-the-stable-repository">3.3 Set up the stable repository</a></li>
+<li><a href="#34-install-docker-engine">3.4 Install Docker Engine</a></li>
+<li><a href="#35-verify-docker-engine">3.5 Verify Docker Engine</a></li>
+</ul>
+</li>
+<li><a href="#4-pytorch-installation">4, PyTorch Installation</a><br>
+*
+<ul>
+<li><a href="#41-obtain-docker-image">4.1 Obtain docker image</a></li>
+<li><a href="#42-start-a-docker-container">4.2 Start a docker container</a></li>
+<li><a href="#43-pytorch-test-suggest-skip-the-limited-gpu-memory-cause-crash">4.3 Pytorch test (suggest skip, the limited GPU memory cause crash)</a></li>
+<li><a href="#44-install-torchvision">4.4 Install torchvision</a></li>
+</ul>
+</li>
+<li><a href="#5-monodepth2-on-pytorch">5, monodepth2 on pyTorch</a><br>
+*
+<ul>
+<li><a href="#51-download-source-code">5.1 Download source code</a></li>
+<li><a href="#52-the-first-time">5.2 The first time</a>
+<ul>
+<li><a href="#521-find-the-existing-docker">5.2.1 Find the existing docker</a></li>
+<li><a href="#522-get-the-dockers-name">5.2.2 Get the docker's name</a></li>
+<li><a href="#523-upload-the-source-code-to-docker">5.2.3 Upload the source code to docker</a></li>
+</ul>
+</li>
+<li><a href="#53-test-monodepth2">5.3 Test Monodepth2</a>
+<ul>
+<li><a href="#531-find-the-existing-docker">5.3.1 Find the existing docker</a></li>
+<li><a href="#532-active-the-existing-docker">5.3.2 Active the existing docker</a></li>
+<li><a href="#533-enter-the-docker">5.3.3 Enter the docker</a></li>
+<li><a href="#534-convert-the-image-into-video">5.3.4 convert the image into video</a></li>
+<li><a href="#535-test-monodepth2-on-cpu">5.3.5 Test Monodepth2 on CPU</a></li>
+<li><a href="#536-test-monodepth2-on-gpu">5.3.6 Test Monodepth2 on GPU</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">Next</div>
+            <a href="https://lhf2011.github.io/post/motion-model/">
+              <h3 class="post-title">
+                Motion model
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://lhf2011.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2020-10-20T18:55:20.601Z</updated>
+    <updated>2020-10-22T22:54:16.781Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -15,7 +15,7 @@
         <id>https://lhf2011.github.io/post/install-tensorflow-and-pytorch-on-pn50/</id>
         <link href="https://lhf2011.github.io/post/install-tensorflow-and-pytorch-on-pn50/">
         </link>
-        <updated>2020-10-19T07:24:16.000Z</updated>
+        <updated>2020-10-18T07:24:16.000Z</updated>
         <content type="html"><![CDATA[<p>CPU: AMD Ryzen 4500U<br>
 GPU: AMD Vega 6<br>
 OS: Ubuntu18.04</p>
@@ -167,13 +167,27 @@ sudo apt-get install docker-ce docker-ce-cli containerd.io
 <h3 id="43-pytorch-test-suggest-skip-the-limited-gpu-memory-cause-crash">4.3 Pytorch test (suggest skip, the limited GPU memory cause crash)</h3>
 <pre><code>PYTORCH_TEST_WITH_ROCM=1 python3.6 test/run_test.py --verbose
 </code></pre>
-<h3 id="44-install-torchvision">4.4 Install torchvision</h3>
+<h3 id="44-install-torchvision-in-docker">4.4 Install torchvision in Docker</h3>
 <pre><code>pip install torchvision
+</code></pre>
+<h3 id="45-install-cv2-in-docker">4.5 Install cv2 in Docker</h3>
+<pre><code>sudo apt install libopencv-dev
+sudo pip install opencv-python
+</code></pre>
+<h3 id="46-install-realsense-package-in-docker">4.6 Install RealSense package in Docker</h3>
+<pre><code>sudo apt-key adv --keyserver keys.gnupg.net --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE || sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-key F6E65AC044F831AC80A06380C8B3A55A6F3EFCDE
+</code></pre>
+<pre><code>sudo add-apt-repository &quot;deb http://realsense-hw-public.s3.amazonaws.com/Debian/apt-repo bionic main&quot; -u
+</code></pre>
+<pre><code>sudo apt install librealsense2-dkms librealsense2-utils librealsense2-dev
+</code></pre>
+<h3 id="47-install-pyrealsense2-in-docker">4.7 Install pyrealsense2 in Docker</h3>
+<pre><code>sudo pip3 install --user pyrealsense2
 </code></pre>
 <h1 id="5-monodepth2-on-pytorch">5, monodepth2 on pyTorch</h1>
 <h3 id="51-download-source-code">5.1 Download source code</h3>
-<p><a href="https://github.com/nianticlabs/monodepth2">source code</a><br>
-GitLab: monodepth2_pytorch project</p>
+<p><a href="https://gitlab.com/crosswing/monodepth2_pytorch">source code</a><br>
+Crosswing GitLab: monodepth2_pytorch project</p>
 <h3 id="52-the-first-time">5.2 The first time</h3>
 <h4 id="521-find-the-existing-docker">5.2.1 Find the existing docker</h4>
 <pre><code>sudo docker ps -aq
@@ -186,10 +200,10 @@ GitLab: monodepth2_pytorch project</p>
 Mine is &quot;6ffacbcb6331f43bf63257d333e415f1ef37c20a48c019f537daf9dbd8e1b4ea&quot;,<br>
 you should replace your's in the next command.</p>
 <h4 id="523-upload-the-source-code-to-docker">5.2.3 Upload the source code to docker</h4>
-<p>In the direction of your download code &quot;user@pn50n1:~/Downloads&quot;, copy the source code fold &quot;monodepth2&quot; to the &quot;/root/&quot; directory in docker. You can also copy files from docker to your computer, just by changing the order of source and target.</p>
-<pre><code>sudo docker cp monodepth2 6ffacbcb6331f43bf63257d333e415f1ef37c20a48c019f537daf9dbd8e1b4ea:/root/
+<p>In the direction of your download code &quot;user@pn50n1:~/Downloads&quot;, copy the source code fold &quot;monodepth2_pytorch&quot; to the &quot;/root/&quot; directory in docker. You can also copy files from docker to your computer, just by changing the order of source and target.</p>
+<pre><code>sudo docker cp monodepth2_pytorch 6ffacbcb6331f43bf63257d333e415f1ef37c20a48c019f537daf9dbd8e1b4ea:/root/
 </code></pre>
-<h3 id="53-test-monodepth2">5.3 Test Monodepth2</h3>
+<h3 id="53-test-monodepth2_pytorch">5.3 Test monodepth2_pytorch</h3>
 <h4 id="531-find-the-existing-docker">5.3.1 Find the existing docker</h4>
 <pre><code>sudo docker ps -aq
 </code></pre>
@@ -201,17 +215,17 @@ you should replace your's in the next command.</p>
 <pre><code>sudo docker exec -it 6ffacbcb6331 /bin/bash
 </code></pre>
 <p>You will be in the directory of &quot;~/pytorch&quot;, you should left this directory to use pytorch, like:</p>
-<pre><code>cd /root/monodepth2
+<pre><code>cd /root/monodepth2_pytorch
 </code></pre>
 <h4 id="534-convert-the-image-into-video">5.3.4 convert the image into video</h4>
-<p>In the direction of &quot;root@6ffacbcb6331:~/monodepth2&quot;</p>
+<p>In the direction of &quot;root@6ffacbcb6331:~/monodepth2_pytorch&quot;</p>
 <pre><code>python image2video.py
 </code></pre>
-<h4 id="535-test-monodepth2-on-cpu">5.3.5 Test Monodepth2 on CPU</h4>
-<pre><code>time python test_simple_video.py --no_cuda --image_path /root/monodepth2/assets/data_road/testing/image_2/ --ext png --model_name mono+stereo_640x192
+<h4 id="535-test-monodepth2_pytorch-on-cpu">5.3.5 Test monodepth2_pytorch on CPU</h4>
+<pre><code>time python test_simple_video.py --no_cuda --model_name mono+stereo_640x192
 </code></pre>
-<h4 id="536-test-monodepth2-on-gpu">5.3.6 Test Monodepth2 on GPU</h4>
-<pre><code>time python test_simple_video.py --image_path /root/monodepth2/assets/data_road/testing/image_2/ --ext png --model_name mono+stereo_640x192
+<h4 id="536-test-monodepth2_pytorch-on-gpu">5.3.6 Test monodepth2_pytorch on GPU</h4>
+<pre><code>time python test_simple_video.py --model_name mono+stereo_640x192
 </code></pre>
 ]]></content>
     </entry>

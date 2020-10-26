@@ -2,21 +2,17 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>About | Gridea</title>
+<title>Auction  algorithm | Gridea</title>
 <link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1603677723849">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="About | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="Auction  algorithm | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="
-Welcome！🤝
-
-🏠 Autonomous driving
-👨‍💻 Hongfei
-⛹ SLAM, LiDAR, computer vision, Deep learning, 3D reconstruction, path ..." />
+    <meta name="description" content="3.3 Auction Algorithm
+This problem has several approaches, but the successive shortest paths (SSP) approach has been rep..." />
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -79,37 +75,73 @@ Welcome！🤝
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              About
+              Auction  algorithm
             </h2>
             <div class="post-info">
               <span>
-                2019-01-24
+                2020-10-24
               </span>
               <span>
-                1 min read
+                2 min read
               </span>
               
             </div>
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <blockquote>
-<p>Welcome！🤝</p>
-</blockquote>
-<h2 id="autonomous-driving">🏠 Autonomous driving</h2>
-<h2 id="hongfei">👨‍💻 Hongfei</h2>
-<h2 id="slam-lidar-computer-vision-deep-learning-3d-reconstruction-path-planing">⛹ SLAM, LiDAR, computer vision, Deep learning, 3D reconstruction, path planing</h2>
-<h2 id="lhf2011ustceducn">📬 lhf2011@ustc.edu.cn</h2>
+                <h3 id="33-auction-algorithm">3.3 Auction Algorithm</h3>
+<p>This problem has several approaches, but the successive shortest paths (SSP) approach has been repeatedly shown to perform well for data association.<br>
+Given a single source (row), one or more targets (available columns), and a nonnegative cost matrix(C0), the problem at each step becomes the classic shortest path problem as solved by Dijkstra's algorithm.<br>
+<img src="../../post-images/20200927_auction algorithm.jpg" width="400" height="400" align=center /><br>
+<code>Update Rule: new_profit= max_profit - 2nd-max_profit+ ε + pre_profit</code></p>
+<pre><code class="language-cpp">// the largest weight tracker: u
+max = 0;
+for (i = g-&gt;cd[u]; i&lt;g-&gt;cd[u + 1]; i++) 
+{
+	v = g-&gt;adj[i];
+	w = g-&gt;w[i];
+	if ((double)w - p[v]&gt;max) 
+    {
+		max = (double)w - p[v];
+		wmax = w;
+		k = v;
+	}
+}
+if (max == 0) 
+{
+	// convert to another tracker 'u'
+	break;
+}
+// the second-largest weight tracker: u
+max2 = 0;
+for (i = g-&gt;cd[u]; i&lt;g-&gt;cd[u + 1]; i++) 
+{
+	v = g-&gt;adj[i];
+	if (v != k) // k has matched with the largest weight tracker 'u'
+    {
+		w = g-&gt;w[i];
+		if ((double)w - p[v]&gt;max2) 
+        {
+			max2 = (double)w - p[v];
+		}
+	}
+}
+p[k] += max - max2 + eps;
+a[k] = u;
+aw[k] = wmax;
+res += wmax;
+</code></pre>
 
               </div>
               <div class="toc-container">
                 <ul class="markdownIt-TOC">
 <li>
 <ul>
-<li><a href="#autonomous-driving">🏠 Autonomous driving</a></li>
-<li><a href="#hongfei">👨‍💻 Hongfei</a></li>
-<li><a href="#slam-lidar-computer-vision-deep-learning-3d-reconstruction-path-planing">⛹ SLAM, LiDAR, computer vision, Deep learning, 3D reconstruction, path planing</a></li>
-<li><a href="#lhf2011ustceducn">📬 lhf2011@ustc.edu.cn</a></li>
+<li>
+<ul>
+<li><a href="#33-auction-algorithm">3.3 Auction Algorithm</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -119,6 +151,15 @@ Welcome！🤝
           </article>
         </div>
 
+        
+          <div class="next-post">
+            <div class="next">Next</div>
+            <a href="https://lhf2011.github.io/post/install-tensorflow-and-pytorch-on-pn50/">
+              <h3 class="post-title">
+                Install Tensorflow and PyTorch on PN50
+              </h3>
+            </a>
+          </div>
         
 
         

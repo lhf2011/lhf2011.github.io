@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2020-10-26T05:06:17.549Z</updated>
+    <updated>2020-10-26T05:08:03.365Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -11,11 +11,11 @@
     <icon>https://lhf2011.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
     <entry>
-        <title type="html"><![CDATA[Install Tensorflow and PyTorch on PN50]]></title>
+        <title type="html"><![CDATA[Install Tensorflow and PyTorch on PN50( AMD cpu+gpu)]]></title>
         <id>https://lhf2011.github.io/post/install-tensorflow-and-pytorch-on-pn50/</id>
         <link href="https://lhf2011.github.io/post/install-tensorflow-and-pytorch-on-pn50/">
         </link>
-        <updated>2020-10-18T07:24:16.000Z</updated>
+        <updated>2020-10-17T07:24:16.000Z</updated>
         <content type="html"><![CDATA[<p>CPU: AMD Ryzen 4500U<br>
 GPU: AMD Vega 6<br>
 OS: Ubuntu18.04</p>

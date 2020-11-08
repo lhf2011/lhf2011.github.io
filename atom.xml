@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2020-11-08T23:52:25.685Z</updated>
+    <updated>2020-11-08T19:45:43.455Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -15,9 +15,9 @@
         <id>https://lhf2011.github.io/post/skills-in-docker/</id>
         <link href="https://lhf2011.github.io/post/skills-in-docker/">
         </link>
-        <updated>2020-11-08T10:22:34.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="images">images</h1>
-<h2 id="show-current-images">show current images</h2>
+        <updated>2020-11-07T21:22:34.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="1-images">1, images</h1>
+<h2 id="11-show-current-images">1.1 show current images</h2>
 <pre><code class="language-shell">sudo docker images
 </code></pre>
 <pre><code>REPOSITORY          TAG                                 IMAGE ID            CREATED             SIZE
@@ -27,16 +27,16 @@ ros/melodic         cleanbot                            e4ef2ea3b799        2 we
 ubuntu              18.04                               56def654ec22        6 weeks ago         63.2MB
 rocm/pytorch        rocm3.8_ubuntu18.04_py3.6_pytorch   147431d73387        6 weeks ago         11.3GB
 </code></pre>
-<h2 id="delete-an-image">delete an image</h2>
+<h2 id="12-delete-an-image">1.2 delete an image</h2>
 <p>replace the &quot;013dea85b6b1&quot; with your image ID</p>
 <pre><code class="language-shell">sudo docker rmi 013dea85b6b1
 </code></pre>
-<h2 id="save-the-current-container-as-an-image">save the current container as an image</h2>
+<h2 id="13-save-the-current-container-as-an-image">1.3 save the current container as an image</h2>
 <p>In this example，&quot;fastdepth&quot; is the name of the image，&quot;20201106&quot; is the tag，&quot;hongfei&quot; is the committer，&quot;eb08befd44b9&quot; is the number of Container which will be saved as an image.</p>
 <pre><code class="language-shell">docker commit -a &quot;hongfei&quot; -m &quot;fastdepth save video but can not show image&quot; eb08befd44b9 fastdepth:20201106
 </code></pre>
-<h1 id="container">Container</h1>
-<h2 id="show-current-containers">show current containers</h2>
+<h1 id="2-container">2, Container</h1>
+<h2 id="21-show-current-containers">2.1 show current containers</h2>
 <pre><code class="language-shell">sudo docker ps -aq
 </code></pre>
 <pre><code class="language-shell">5f71f4ac3e38
@@ -52,29 +52,40 @@ rocm/pytorch        rocm3.8_ubuntu18.04_py3.6_pytorch   147431d73387        6 we
 <pre><code class="language-shell">CONTAINER_ID   IMAGE             COMMAND       CREATED    STATUS     PORTS            NAMES
 5f71f4ac3e38   013dea85b6b1      &quot;bash&quot;        2 days ago Exited (0) 40 hours ago bold_hawking
 </code></pre>
-<h2 id="delete-a-container">delete a container</h2>
+<h2 id="22-delete-a-container">2.2 delete a container</h2>
+<h3 id="delete-a-running-container">Delete a running container</h3>
+<pre><code class="language-shell">sudo docker stop 5f71f4ac3e38
+sudo docker rm 5f71f4ac3e38
+</code></pre>
+<p>&quot;stop&quot; + &quot;rm&quot; is equal to &quot;rm -f&quot;, cause &quot;-f&quot; is deleting a running container.</p>
 <pre><code class="language-shell">sudo docker rm -f 5f71f4ac3e38
 </code></pre>
-<h2 id="create-a-container-based-on-an-image">create a container based on an image</h2>
+<h3 id="delete-all-containers">Delete all containers</h3>
+<pre><code class="language-shell">sudo docker container rm -f $(docker container ls -a -q)
+</code></pre>
+<h2 id="23-create-a-container-based-on-an-image">2.3 create a container based on an image</h2>
 <p>&quot;013dea85b6b1&quot; is the number of the base image, X11 is the new feature will be added on the image.</p>
 <pre><code class="language-shell">sudo docker run -it -v /opt/containerd:/data -v /tmp/.X11-unix:/tmp/.X11-unix  -e DISPLAY=:0 --privileged --device=/dev/kfd --device=/dev/dri --group-add video 013dea85b6b1
 </code></pre>
-<h2 id="activate-a-container">activate a container</h2>
+<h2 id="24-activate-a-container">2.4 activate a container</h2>
 <pre><code class="language-shell">sudo docker start 6ffacbcb6331
 </code></pre>
-<h2 id="enter-a-container">enter a container</h2>
+<h2 id="25-enter-a-container">2.5 enter a container</h2>
 <p>Exit this container by command &quot;exit&quot;</p>
 <pre><code class="language-shell">sudo docker exec -it 6ffacbcb6331 /bin/bash
 </code></pre>
-<h1 id="transfer">Transfer</h1>
-<h2 id="get-the-containers-long-number-by-short-numer">get the container's long number by short numer</h2>
-<pre><code class="language-shell">sudo docker inspect -f '{{.Id}}' 6ffacbcb6331
+<h1 id="3-transfer">3, Transfer</h1>
+<h2 id="31-get-the-containers-long-number-by-short-numer">3.1 get the container's long number by short numer</h2>
+<pre><code class="language-shell">sudo docker inspect -f '{{.Id}}' 5f71f4ac3e38
 </code></pre>
 <p>Return the long number:</p>
-<pre><code class="language-shell">6ffacbcb6331f43bf63257d333e415f1ef37c20a48c019f537daf9dbd8e1b4ea
+<pre><code class="language-shell">5f71f4ac3e381e99952e81c73a643c02e700ff2385729450c0bdf7236954fe22
 </code></pre>
-<h2 id="copy-between-host-and-container">copy between host and container</h2>
+<h2 id="32-copy-between-host-and-container">3.2 copy between host and container</h2>
 <pre><code class="language-shell">sudo docker cp originer_foler/filename target_foler/
+</code></pre>
+<p>For example:</p>
+<pre><code class="language-shell">sudo docker cp /home/user/Downloads/fast-depth-master.zip 5f71f4ac3e381e99952e81c73a643c02e700ff2385729450c0bdf7236954fe22:/root/
 </code></pre>
 ]]></content>
     </entry>

@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2020-10-26T05:08:03.365Z</updated>
+    <updated>2020-11-08T23:52:25.685Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -10,6 +10,74 @@
     <logo>https://lhf2011.github.io/images/avatar.png</logo>
     <icon>https://lhf2011.github.io/favicon.ico</icon>
     <rights>All rights reserved 2020, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[skills in Docker]]></title>
+        <id>https://lhf2011.github.io/post/skills-in-docker/</id>
+        <link href="https://lhf2011.github.io/post/skills-in-docker/">
+        </link>
+        <updated>2020-11-08T10:22:34.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="images">images</h1>
+<h2 id="show-current-images">show current images</h2>
+<pre><code class="language-shell">sudo docker images
+</code></pre>
+<pre><code>REPOSITORY          TAG                                 IMAGE ID            CREATED             SIZE
+fastdepth           20201106                            013dea85b6b1        2 days ago          12.2GB
+ros/melodic         cleanbot                            e4ef2ea3b799        2 weeks ago         3.11GB
+&lt;none&gt;              &lt;none&gt;                              a30a51d10ea6        2 weeks ago         284MB
+ubuntu              18.04                               56def654ec22        6 weeks ago         63.2MB
+rocm/pytorch        rocm3.8_ubuntu18.04_py3.6_pytorch   147431d73387        6 weeks ago         11.3GB
+</code></pre>
+<h2 id="delete-an-image">delete an image</h2>
+<p>replace the &quot;013dea85b6b1&quot; with your image ID</p>
+<pre><code class="language-shell">sudo docker rmi 013dea85b6b1
+</code></pre>
+<h2 id="save-the-current-container-as-an-image">save the current container as an image</h2>
+<p>In this example，&quot;fastdepth&quot; is the name of the image，&quot;20201106&quot; is the tag，&quot;hongfei&quot; is the committer，&quot;eb08befd44b9&quot; is the number of Container which will be saved as an image.</p>
+<pre><code class="language-shell">docker commit -a &quot;hongfei&quot; -m &quot;fastdepth save video but can not show image&quot; eb08befd44b9 fastdepth:20201106
+</code></pre>
+<h1 id="container">Container</h1>
+<h2 id="show-current-containers">show current containers</h2>
+<pre><code class="language-shell">sudo docker ps -aq
+</code></pre>
+<pre><code class="language-shell">5f71f4ac3e38
+4f57e0357c83
+56c8a3039372
+7c8440751a0e
+97ff76b06cb4
+6ffacbcb6331
+</code></pre>
+<p>Without &quot;q&quot;, can get more details</p>
+<pre><code class="language-shell">sudo docker ps -a
+</code></pre>
+<pre><code class="language-shell">CONTAINER_ID   IMAGE             COMMAND       CREATED    STATUS     PORTS            NAMES
+5f71f4ac3e38   013dea85b6b1      &quot;bash&quot;        2 days ago Exited (0) 40 hours ago bold_hawking
+</code></pre>
+<h2 id="delete-a-container">delete a container</h2>
+<pre><code class="language-shell">sudo docker rm -f 5f71f4ac3e38
+</code></pre>
+<h2 id="create-a-container-based-on-an-image">create a container based on an image</h2>
+<p>&quot;013dea85b6b1&quot; is the number of the base image, X11 is the new feature will be added on the image.</p>
+<pre><code class="language-shell">sudo docker run -it -v /opt/containerd:/data -v /tmp/.X11-unix:/tmp/.X11-unix  -e DISPLAY=:0 --privileged --device=/dev/kfd --device=/dev/dri --group-add video 013dea85b6b1
+</code></pre>
+<h2 id="activate-a-container">activate a container</h2>
+<pre><code class="language-shell">sudo docker start 6ffacbcb6331
+</code></pre>
+<h2 id="enter-a-container">enter a container</h2>
+<p>Exit this container by command &quot;exit&quot;</p>
+<pre><code class="language-shell">sudo docker exec -it 6ffacbcb6331 /bin/bash
+</code></pre>
+<h1 id="transfer">Transfer</h1>
+<h2 id="get-the-containers-long-number-by-short-numer">get the container's long number by short numer</h2>
+<pre><code class="language-shell">sudo docker inspect -f '{{.Id}}' 6ffacbcb6331
+</code></pre>
+<p>Return the long number:</p>
+<pre><code class="language-shell">6ffacbcb6331f43bf63257d333e415f1ef37c20a48c019f537daf9dbd8e1b4ea
+</code></pre>
+<h2 id="copy-between-host-and-container">copy between host and container</h2>
+<pre><code class="language-shell">sudo docker cp originer_foler/filename target_foler/
+</code></pre>
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Install Tensorflow and PyTorch on PN50( AMD cpu+gpu)]]></title>
         <id>https://lhf2011.github.io/post/install-tensorflow-and-pytorch-on-pn50/</id>
@@ -933,47 +1001,6 @@ Distance matrix D: shape in NxN, describe the feature space distance<br>
 Similar samples stay togetherm, unsimilar samples stay away.<br>
 The N-tuple loss is the positive&amp;negative matches which combines the M&amp;D matrix.<br>
 Why N-tuple loss is addvanced? Because it combined the global feature, therefore make use of the global information.</p>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[camera driver on Linux-V4L2(video for linux two)]]></title>
-        <id>https://lhf2011.github.io/post/camera-driver-on-linux-v4l2video-for-linux-two/</id>
-        <link href="https://lhf2011.github.io/post/camera-driver-on-linux-v4l2video-for-linux-two/">
-        </link>
-        <updated>2020-09-10T15:53:57.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="environment">Environment</h1>
-<p>Camera sensor(CMOS) is Aptina AR0143.<br>
-Renesas R-Car H3.<br>
-OS: Renesas Yocto Linux.</p>
-<h1 id="task">Task</h1>
-<p>In our driverless car system, there are 4 fisheye cameras, located at the front,back,left and right side of our car, we call them a surround-view camera.<br>
-In this camera driver programming task, I do not focus on how to power the sensor, how to register it on an I2C bus, my task is: How to capture raw frames in an application software component, that's to say, how to transfer the image data from kernel to user space.</p>
-<h1 id="streaming">Streaming</h1>
-<p>In this peoject, we adopt 2 ways in raw data streaming, one is memory mapping, and the other one is user pointer.<br>
-In memory mapping, ioctl request/release buffers in physic address, call the “mmap” mapping and “munmap” unmapping the physic address into user virtual address.<br>
-In user pointer method, the application software component allocate and release the memory, and give the pointer to V4L2 driver, the driver will save the image data in this pointer's memory.</p>
-<h1 id="workflow">Workflow</h1>
-<p>No matter which method to allocate the memory, the process is the same one.</p>
-<h2 id="1-open_device">1), open_device</h2>
-<h2 id="2-init_device">2), init_device:</h2>
-<p>set image size, format and frame rate, and allocate memory in memory mapping or user pointer method I mentioned above.</p>
-<h2 id="3-start_capturing">3), Start_capturing:</h2>
-<p>VIDIOC_QBUF get data from buffer and show it on screen.</p>
-<h2 id="4-open_fb">4), open_fb():</h2>
-<p>open the fbfd(frame buffer file descriptor), Map the device to memory.</p>
-<h2 id="5-mainloop">5), mainloop():</h2>
-<p>it's a loop of read_frame, in read_frame function, read device’s file descriptor, transform image data from device -&gt; memory -&gt; application software component.<br>
-xioctl(fd[dev], VIDIOC_DQBUF, &amp;buf) //VIDIOC_DQBUF: put image data into a buffer.<br>
-xioctl(fd[dev], VIDIOC_QBUF, &amp;buf)//VIDIOC_QBUF：get image data from buffer.<br>
-xioctl(fd[dev], VIDIOC_STREAMON, &amp;type)//VIDIOC_STREAMON: show the image on screen.</p>
-<h2 id="6-close_fb">6), close_fb():</h2>
-<p>close fbfd(frame buffer file descriptor).</p>
-<h2 id="7-stop_capturingdev">7), stop_capturing(dev):</h2>
-<p>stop the screen showing</p>
-<h2 id="8-uninit_devicedev">8), uninit_device(dev):</h2>
-<p>release the memory</p>
-<h2 id="9-close_devicedev">9), close_device(dev):</h2>
-<p>close device’s file descriptor</p>
 ]]></content>
     </entry>
 </feed>

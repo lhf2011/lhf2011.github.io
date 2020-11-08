@@ -1,0 +1,252 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>skills in Docker | Gridea</title>
+<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1604879534123">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
+<link rel="alternate" type="application/atom+xml" title="skills in Docker | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
+
+
+
+    <meta name="description" content="images
+show current images
+sudo docker images
+
+REPOSITORY          TAG                                 IMAGE ID         ..." />
+    <meta name="keywords" content="" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
+    <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
+  </head>
+  <body>
+    <div class="main">
+      <div class="main-content">
+        <div class="site-header">
+  <a href="https://lhf2011.github.io">
+  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1604879534123" alt="">
+  </a>
+  <h1 class="site-title">
+    Gridea
+  </h1>
+  <p class="site-description">
+    Be good. 
+  </p>
+  <div class="menu-container">
+    
+      
+        <a href="/" class="menu">
+          Index
+        </a>
+      
+    
+      
+        <a href="/archives" class="menu">
+          Archives
+        </a>
+      
+    
+      
+        <a href="/tags" class="menu">
+          Tags
+        </a>
+      
+    
+      
+        <a href="/post/about" class="menu">
+          About
+        </a>
+      
+    
+  </div>
+  <div class="social-container">
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  </div>
+</div>
+
+        <div class="post-detail">
+          <article class="post">
+            <h2 class="post-title">
+              skills in Docker
+            </h2>
+            <div class="post-info">
+              <span>
+                2020-11-08
+              </span>
+              <span>
+                2 min read
+              </span>
+              
+            </div>
+            
+            <div class="post-content-wrapper">
+              <div class="post-content">
+                <h1 id="images">images</h1>
+<h2 id="show-current-images">show current images</h2>
+<pre><code class="language-shell">sudo docker images
+</code></pre>
+<pre><code>REPOSITORY          TAG                                 IMAGE ID            CREATED             SIZE
+fastdepth           20201106                            013dea85b6b1        2 days ago          12.2GB
+ros/melodic         cleanbot                            e4ef2ea3b799        2 weeks ago         3.11GB
+&lt;none&gt;              &lt;none&gt;                              a30a51d10ea6        2 weeks ago         284MB
+ubuntu              18.04                               56def654ec22        6 weeks ago         63.2MB
+rocm/pytorch        rocm3.8_ubuntu18.04_py3.6_pytorch   147431d73387        6 weeks ago         11.3GB
+</code></pre>
+<h2 id="delete-an-image">delete an image</h2>
+<p>replace the &quot;013dea85b6b1&quot; with your image ID</p>
+<pre><code class="language-shell">sudo docker rmi 013dea85b6b1
+</code></pre>
+<h2 id="save-the-current-container-as-an-image">save the current container as an image</h2>
+<p>In this example，&quot;fastdepth&quot; is the name of the image，&quot;20201106&quot; is the tag，&quot;hongfei&quot; is the committer，&quot;eb08befd44b9&quot; is the number of Container which will be saved as an image.</p>
+<pre><code class="language-shell">docker commit -a &quot;hongfei&quot; -m &quot;fastdepth save video but can not show image&quot; eb08befd44b9 fastdepth:20201106
+</code></pre>
+<h1 id="container">Container</h1>
+<h2 id="show-current-containers">show current containers</h2>
+<pre><code class="language-shell">sudo docker ps -aq
+</code></pre>
+<pre><code class="language-shell">5f71f4ac3e38
+4f57e0357c83
+56c8a3039372
+7c8440751a0e
+97ff76b06cb4
+6ffacbcb6331
+</code></pre>
+<p>Without &quot;q&quot;, can get more details</p>
+<pre><code class="language-shell">sudo docker ps -a
+</code></pre>
+<pre><code class="language-shell">CONTAINER_ID   IMAGE             COMMAND       CREATED    STATUS     PORTS            NAMES
+5f71f4ac3e38   013dea85b6b1      &quot;bash&quot;        2 days ago Exited (0) 40 hours ago bold_hawking
+</code></pre>
+<h2 id="delete-a-container">delete a container</h2>
+<pre><code class="language-shell">sudo docker rm -f 5f71f4ac3e38
+</code></pre>
+<h2 id="create-a-container-based-on-an-image">create a container based on an image</h2>
+<p>&quot;013dea85b6b1&quot; is the number of the base image, X11 is the new feature will be added on the image.</p>
+<pre><code class="language-shell">sudo docker run -it -v /opt/containerd:/data -v /tmp/.X11-unix:/tmp/.X11-unix  -e DISPLAY=:0 --privileged --device=/dev/kfd --device=/dev/dri --group-add video 013dea85b6b1
+</code></pre>
+<h2 id="activate-a-container">activate a container</h2>
+<pre><code class="language-shell">sudo docker start 6ffacbcb6331
+</code></pre>
+<h2 id="enter-a-container">enter a container</h2>
+<p>Exit this container by command &quot;exit&quot;</p>
+<pre><code class="language-shell">sudo docker exec -it 6ffacbcb6331 /bin/bash
+</code></pre>
+<h1 id="transfer">Transfer</h1>
+<h2 id="get-the-containers-long-number-by-short-numer">get the container's long number by short numer</h2>
+<pre><code class="language-shell">sudo docker inspect -f '{{.Id}}' 6ffacbcb6331
+</code></pre>
+<p>Return the long number:</p>
+<pre><code class="language-shell">6ffacbcb6331f43bf63257d333e415f1ef37c20a48c019f537daf9dbd8e1b4ea
+</code></pre>
+<h2 id="copy-between-host-and-container">copy between host and container</h2>
+<pre><code class="language-shell">sudo docker cp originer_foler/filename target_foler/
+</code></pre>
+
+              </div>
+              <div class="toc-container">
+                <ul class="markdownIt-TOC">
+<li><a href="#images">images</a>
+<ul>
+<li><a href="#show-current-images">show current images</a></li>
+<li><a href="#delete-an-image">delete an image</a></li>
+<li><a href="#save-the-current-container-as-an-image">save the current container as an image</a></li>
+</ul>
+</li>
+<li><a href="#container">Container</a>
+<ul>
+<li><a href="#show-current-containers">show current containers</a></li>
+<li><a href="#delete-a-container">delete a container</a></li>
+<li><a href="#create-a-container-based-on-an-image">create a container based on an image</a></li>
+<li><a href="#activate-a-container">activate a container</a></li>
+<li><a href="#enter-a-container">enter a container</a></li>
+</ul>
+</li>
+<li><a href="#transfer">Transfer</a>
+<ul>
+<li><a href="#get-the-containers-long-number-by-short-numer">get the container's long number by short numer</a></li>
+<li><a href="#copy-between-host-and-container">copy between host and container</a></li>
+</ul>
+</li>
+</ul>
+
+              </div>
+            </div>
+          </article>
+        </div>
+
+        
+          <div class="next-post">
+            <div class="next">Next</div>
+            <a href="https://lhf2011.github.io/post/install-tensorflow-and-pytorch-on-pn50/">
+              <h3 class="post-title">
+                Install Tensorflow and PyTorch on PN50( AMD cpu+gpu)
+              </h3>
+            </a>
+          </div>
+        
+
+        
+
+        <div class="site-footer">
+  Powered by <a href="https://github.com/getgridea/gridea" target="_blank">Gridea</a>
+  <a class="rss" href="https://lhf2011.github.io/atom.xml" target="_blank">
+    <i class="ri-rss-line"></i> RSS
+  </a>
+</div>
+
+      </div>
+    </div>
+
+    <script>
+      hljs.initHighlightingOnLoad()
+
+      let mainNavLinks = document.querySelectorAll(".markdownIt-TOC a");
+
+      // This should probably be throttled.
+      // Especially because it triggers during smooth scrolling.
+      // https://lodash.com/docs/4.17.10#throttle
+      // You could do like...
+      // window.addEventListener("scroll", () => {
+      //    _.throttle(doThatStuff, 100);
+      // });
+      // Only not doing it here to keep this Pen dependency-free.
+
+      window.addEventListener("scroll", event => {
+        let fromTop = window.scrollY;
+
+        mainNavLinks.forEach((link, index) => {
+          let section = document.getElementById(decodeURI(link.hash).substring(1));
+          let nextSection = null
+          if (mainNavLinks[index + 1]) {
+            nextSection = document.getElementById(decodeURI(mainNavLinks[index + 1].hash).substring(1));
+          }
+          if (section.offsetTop <= fromTop) {
+            if (nextSection) {
+              if (nextSection.offsetTop > fromTop) {
+                link.classList.add("current");
+              } else {
+                link.classList.remove("current");    
+              }
+            } else {
+              link.classList.add("current");
+            }
+          } else {
+            link.classList.remove("current");
+          }
+        });
+      });
+
+    </script>
+  </body>
+</html>

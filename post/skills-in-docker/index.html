@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>skills in Docker | Gridea</title>
-<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1604864739755">
+<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1604874004177">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="skills in Docker | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
@@ -25,7 +25,7 @@ REPOSITORY          TAG                                 IMAGE ID  ..." />
       <div class="main-content">
         <div class="site-header">
   <a href="https://lhf2011.github.io">
-  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1604864739755" alt="">
+  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1604874004177" alt="">
   </a>
   <h1 class="site-title">
     Gridea
@@ -85,7 +85,7 @@ REPOSITORY          TAG                                 IMAGE ID  ..." />
                 2020-11-07
               </span>
               <span>
-                3 min read
+                4 min read
               </span>
               
             </div>
@@ -114,13 +114,6 @@ rocm/pytorch        rocm3.8_ubuntu18.04_py3.6_pytorch   147431d73387        6 we
 <h1 id="2-container">2, Container</h1>
 <h2 id="21-show-current-containers">2.1 show current containers</h2>
 <pre><code class="language-shell">sudo docker ps -aq
-</code></pre>
-<pre><code class="language-shell">5f71f4ac3e38
-4f57e0357c83
-56c8a3039372
-7c8440751a0e
-97ff76b06cb4
-6ffacbcb6331
 </code></pre>
 <p>Without &quot;q&quot;, can get more details</p>
 <pre><code class="language-shell">sudo docker ps -a
@@ -163,6 +156,34 @@ sudo docker rm 5f71f4ac3e38
 <p>For example:</p>
 <pre><code class="language-shell">sudo docker cp /home/user/Downloads/fast-depth-master.zip 5f71f4ac3e381e99952e81c73a643c02e700ff2385729450c0bdf7236954fe22:/root/
 </code></pre>
+<h1 id="4-network">4, Network</h1>
+<h2 id="41-check-the-network-from-the-outside-of-container">4.1 check the network from the outside of container</h2>
+<pre><code class="language-shell">docker inspect 5f71f4ac3e38 | grep IPAddress
+</code></pre>
+<p>Return the network:</p>
+<pre><code class="language-shell">&quot;SecondaryIPAddresses&quot;: null,
+           &quot;IPAddress&quot;: &quot;172.17.0.2&quot;,
+                   &quot;IPAddress&quot;: &quot;172.17.0.2&quot;,
+</code></pre>
+<h2 id="42-check-the-network-inside-the-container">4.2 check the network inside the container</h2>
+<pre><code class="language-shell">apt-get install -y iproute2
+</code></pre>
+<p>Check the network status by command</p>
+<pre><code class="language-shell">ip a
+</code></pre>
+<h2 id="43-check-connection-between-containers">4.3 check connection between containers</h2>
+<pre><code class="language-shell">apt-get install iputils-ping
+</code></pre>
+<p>ping local host</p>
+<pre><code class="language-shell">ping localhost
+</code></pre>
+<p>ping other containers</p>
+<pre><code class="language-shell">ping 172.17.0.3
+</code></pre>
+<h1 id="5-environment">5 Environment</h1>
+<h2 id="51-check-the-environment-of-the-current-container">5.1 check the environment of the current container</h2>
+<pre><code class="language-shell">env
+</code></pre>
 
               </div>
               <div class="toc-container">
@@ -192,6 +213,18 @@ sudo docker rm 5f71f4ac3e38
 <ul>
 <li><a href="#31-get-the-containers-long-number-by-short-numer">3.1 get the container's long number by short numer</a></li>
 <li><a href="#32-copy-between-host-and-container">3.2 copy between host and container</a></li>
+</ul>
+</li>
+<li><a href="#4-network">4, Network</a>
+<ul>
+<li><a href="#41-check-the-network-from-the-outside-of-container">4.1 check the network from the outside of container</a></li>
+<li><a href="#42-check-the-network-inside-the-container">4.2 check the network inside the container</a></li>
+<li><a href="#43-check-connection-between-containers">4.3 check connection between containers</a></li>
+</ul>
+</li>
+<li><a href="#5-environment">5 Environment</a>
+<ul>
+<li><a href="#51-check-the-environment-of-the-current-container">5.1 check the environment of the current container</a></li>
 </ul>
 </li>
 </ul>

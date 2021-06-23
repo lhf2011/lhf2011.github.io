@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2021-05-30T21:53:44.999Z</updated>
+    <updated>2021-06-23T07:54:26.985Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -10,6 +10,55 @@
     <logo>https://lhf2011.github.io/images/avatar.png</logo>
     <icon>https://lhf2011.github.io/favicon.ico</icon>
     <rights>All rights reserved 2021, Gridea</rights>
+    <entry>
+        <title type="html"><![CDATA[Segmentation]]></title>
+        <id>https://lhf2011.github.io/post/segmentation/</id>
+        <link href="https://lhf2011.github.io/post/segmentation/">
+        </link>
+        <updated>2021-06-21T19:45:18.000Z</updated>
+        <content type="html"><![CDATA[<h1 id="libs-preparation">Libs preparation</h1>
+<p>pytorch<br>
+torch2trt</p>
+<h1 id="1-run-the-pytorch-model-on-your-cuda-platform">1, Run the pytorch model on your cuda platform</h1>
+<p>Command:</p>
+<pre><code class="language-shell">python seg.py --pred_by_pytorch
+</code></pre>
+<p>If successful, there will be log print in terminal:</p>
+<pre><code class="language-shell">segmentation cost time: 0.009063 , move data from cuda to cpu cost time: 0.105587
+</code></pre>
+<p>In this log, the cost time of moving date(0.105587) is far more larger than segmentation(0.009063), it cost more time when the image size increase.</p>
+<h1 id="2-convert-the-python-model-to-be-applied-in-c-libtorch">2, Convert the python model to be applied in C++ libtorch</h1>
+<p>Command: python seg.py --pytorch2cpp<br>
+Issue: Error happens.</p>
+<h1 id="3-convert-the-pytorch-model-to-onnx-and-tensorrt-engine-and-run-it">3, Convert the pytorch model to ONNX and tensorrt engine, and run it.</h1>
+<p>Command:</p>
+<pre><code class="language-shell">python seg.py --torch2onnx --onnx2trt
+</code></pre>
+<p>If successful, there will be 2 models generated under “./model/segmentation_module”, there are “segmentation_module.onnx” and “segmentation_module.trt”.<br>
+Then run:</p>
+<pre><code class="language-shell">python seg.py --pred_by_onnx2trt
+</code></pre>
+<p>If successful, there will be log print in terminal:</p>
+<pre><code class="language-shell">segmentation cost time(): 0.123997
+</code></pre>
+<p>And the segmentation result will be saved in “./input/2021-03-16-11-30-12_4/seg_color.jpg”.<br>
+Issue: Check the segmentation result “seg_color.jpg”, it shows a correct contour, but the prediction is not correct. The same issue happens when the ONNX model runs in openvino.</p>
+<img src="../post-images/20200909_1.png" width="200" height="180" align=center />
+<h1 id="4-convert-the-pytorch-model-to-tensorrt-script-and-run-it">4, Convert the pytorch model to tensorrt script, and run it.</h1>
+<p>Command:</p>
+<pre><code class="language-shell">python seg.py --torch2trt
+</code></pre>
+<p>If successful, there will be a model “segmentation_module.pth” generated under “./model/segmentation_module”.<br>
+Then run:</p>
+<pre><code class="language-shell">python seg.py --pred_by_torch2trt
+</code></pre>
+<p>If successful, there will be log print in terminal:</p>
+<pre><code class="language-shell">segmentation cost time: 0.002163
+</code></pre>
+<p>And the segmentation result will be saved in “./input/2021-03-16-11-30-12_4/seg_color.jpg”, and this result should be correct.</p>
+<img src="../post-images/20200909_1.png" width="200" height="180" align=center />
+]]></content>
+    </entry>
     <entry>
         <title type="html"><![CDATA[Skills in Gridea]]></title>
         <id>https://lhf2011.github.io/post/skills-in-gridea/</id>
@@ -19,25 +68,6 @@
         <content type="html"><![CDATA[<h1 id="1-write">1, write</h1>
 <h1 id="2-how-to-get-the-md-file">2, how to get the .md file</h1>
 <pre><code class="language-shell">C:\Users\hongfei\Documents\Gridea\posts
-</code></pre>
-]]></content>
-    </entry>
-    <entry>
-        <title type="html"><![CDATA[semantic_segmentation_and_depth_completion]]></title>
-        <id>https://lhf2011.github.io/post/semantic_segmentation_and_depth_completion/</id>
-        <link href="https://lhf2011.github.io/post/semantic_segmentation_and_depth_completion/">
-        </link>
-        <updated>2021-05-29T13:29:34.000Z</updated>
-        <content type="html"><![CDATA[<h1 id="1-prepare-the-environment">1, Prepare the Environment</h1>
-<pre><code class="language-shell">apt-get install python-pip
-pip2 install yacs
-pip2 install scipy
-pip2 install sklearn
-pip2 install future
-pip2 install torch==1.4.0 torchvision==0.5.0
-</code></pre>
-<h1 id="2-how-to-run">2, How to Run</h1>
-<pre><code class="language-shell">python semantic_segmentation_and_depth_completion.py --rgb_input /robot/camera_front/color/image_raw --dep_input /robot/camera_front/depth/image_raw
 </code></pre>
 ]]></content>
     </entry>

@@ -2,18 +2,21 @@
   <head>
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Nearest Neighbor Search for LiDAR cloud points | Gridea</title>
+<title>Segmentation | Gridea</title>
 <link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1624434864185">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
-<link rel="alternate" type="application/atom+xml" title="Nearest Neighbor Search for LiDAR cloud points | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
+<link rel="alternate" type="application/atom+xml" title="Segmentation | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Serif:400,700">
 
 
 
-    <meta name="description" content="Task:
-1, For a frame of Nx3 point cloud, building my own kd-tree and octree.
-2, KNN search for each point, comparing the..." />
+    <meta name="description" content="Libs preparation
+pytorch
+torch2trt
+1, Run the pytorch model on your cuda platform
+Command:
+python seg.py --pred_by_pytor..." />
     <meta name="keywords" content="" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.10.0/katex.min.css">
     <script src="https://cdn.bootcss.com/highlight.js/9.12.0/highlight.min.js"></script>
@@ -76,43 +79,70 @@
         <div class="post-detail">
           <article class="post">
             <h2 class="post-title">
-              Nearest Neighbor Search for LiDAR cloud points
+              Segmentation
             </h2>
             <div class="post-info">
               <span>
-                2020-09-20
+                2021-06-21
               </span>
               <span>
-                1 min read
+                2 min read
               </span>
               
             </div>
             
             <div class="post-content-wrapper">
               <div class="post-content">
-                <p>Task:<br>
-1, For a frame of Nx3 point cloud, building my own kd-tree and octree.<br>
-2, KNN search for each point, comparing the time cost with Brute-force search and the function in scipy.spatial.KDTree.</p>
-<h1 id="brute-force-search">Brute-force search</h1>
-<pre><code class="language-python">for query in querys:
-    begin_t = time.time()
-    diff = np.linalg.norm(np.expand_dims(query,0) - db_np,axis=1)
-    nn_idx = np.argsort(diff)
-    nn_dist = diff[nn_idx]
+                <h1 id="libs-preparation">Libs preparation</h1>
+<p>pytorch<br>
+torch2trt</p>
+<h1 id="1-run-the-pytorch-model-on-your-cuda-platform">1, Run the pytorch model on your cuda platform</h1>
+<p>Command:</p>
+<pre><code class="language-shell">python seg.py --pred_by_pytorch
 </code></pre>
-<h1 id="scipy">scipy</h1>
-<pre><code class="language-python">sTree = sciKDtree(db_np, leaf_size)
+<p>If successful, there will be log print in terminal:</p>
+<pre><code class="language-shell">segmentation cost time: 0.009063 , move data from cuda to cpu cost time: 0.105587
 </code></pre>
-<h1 id="kd-tree">Kd-tree</h1>
-<h1 id="octree">Octree</h1>
+<p>In this log, the cost time of moving date(0.105587) is far more larger than segmentation(0.009063), it cost more time when the image size increase.</p>
+<h1 id="2-convert-the-python-model-to-be-applied-in-c-libtorch">2, Convert the python model to be applied in C++ libtorch</h1>
+<p>Command: python seg.py --pytorch2cpp<br>
+Issue: Error happens.</p>
+<h1 id="3-convert-the-pytorch-model-to-onnx-and-tensorrt-engine-and-run-it">3, Convert the pytorch model to ONNX and tensorrt engine, and run it.</h1>
+<p>Command:</p>
+<pre><code class="language-shell">python seg.py --torch2onnx --onnx2trt
+</code></pre>
+<p>If successful, there will be 2 models generated under “./model/segmentation_module”, there are “segmentation_module.onnx” and “segmentation_module.trt”.<br>
+Then run:</p>
+<pre><code class="language-shell">python seg.py --pred_by_onnx2trt
+</code></pre>
+<p>If successful, there will be log print in terminal:</p>
+<pre><code class="language-shell">segmentation cost time(): 0.123997
+</code></pre>
+<p>And the segmentation result will be saved in “./input/2021-03-16-11-30-12_4/seg_color.jpg”.<br>
+Issue: Check the segmentation result “seg_color.jpg”, it shows a correct contour, but the prediction is not correct. The same issue happens when the ONNX model runs in openvino.</p>
+<img src="../post-images/20200909_1.png" width="200" height="180" align=center />
+<h1 id="4-convert-the-pytorch-model-to-tensorrt-script-and-run-it">4, Convert the pytorch model to tensorrt script, and run it.</h1>
+<p>Command:</p>
+<pre><code class="language-shell">python seg.py --torch2trt
+</code></pre>
+<p>If successful, there will be a model “segmentation_module.pth” generated under “./model/segmentation_module”.<br>
+Then run:</p>
+<pre><code class="language-shell">python seg.py --pred_by_torch2trt
+</code></pre>
+<p>If successful, there will be log print in terminal:</p>
+<pre><code class="language-shell">segmentation cost time: 0.002163
+</code></pre>
+<p>And the segmentation result will be saved in “./input/2021-03-16-11-30-12_4/seg_color.jpg”, and this result should be correct.</p>
+<img src="../post-images/20200909_1.png" width="200" height="180" align=center />
 
               </div>
               <div class="toc-container">
                 <ul class="markdownIt-TOC">
-<li><a href="#brute-force-search">Brute-force search</a></li>
-<li><a href="#scipy">scipy</a></li>
-<li><a href="#kd-tree">Kd-tree</a></li>
-<li><a href="#octree">Octree</a></li>
+<li><a href="#libs-preparation">Libs preparation</a></li>
+<li><a href="#1-run-the-pytorch-model-on-your-cuda-platform">1, Run the pytorch model on your cuda platform</a></li>
+<li><a href="#2-convert-the-python-model-to-be-applied-in-c-libtorch">2, Convert the python model to be applied in C++ libtorch</a></li>
+<li><a href="#3-convert-the-pytorch-model-to-onnx-and-tensorrt-engine-and-run-it">3, Convert the pytorch model to ONNX and tensorrt engine, and run it.</a></li>
+<li><a href="#4-convert-the-pytorch-model-to-tensorrt-script-and-run-it">4, Convert the pytorch model to tensorrt script, and run it.</a></li>
 </ul>
 
               </div>
@@ -123,9 +153,9 @@
         
           <div class="next-post">
             <div class="next">Next</div>
-            <a href="https://lhf2011.github.io/post/ground-plane-segmentation/">
+            <a href="https://lhf2011.github.io/post/skills-in-gridea/">
               <h3 class="post-title">
-                Ground plane segmentation(RANSAC) and clustering(DBSCAN)
+                Skills in Gridea
               </h3>
             </a>
           </div>

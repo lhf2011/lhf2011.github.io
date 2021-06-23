@@ -2,7 +2,7 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
     <id>https://lhf2011.github.io</id>
     <title>Gridea</title>
-    <updated>2021-06-23T07:54:26.985Z</updated>
+    <updated>2021-06-23T07:55:34.938Z</updated>
     <generator>https://github.com/jpmonette/feed</generator>
     <link rel="alternate" href="https://lhf2011.github.io"/>
     <link rel="self" href="https://lhf2011.github.io/atom.xml"/>
@@ -15,7 +15,7 @@
         <id>https://lhf2011.github.io/post/segmentation/</id>
         <link href="https://lhf2011.github.io/post/segmentation/">
         </link>
-        <updated>2021-06-21T19:45:18.000Z</updated>
+        <updated>2021-06-21T07:45:18.000Z</updated>
         <content type="html"><![CDATA[<h1 id="libs-preparation">Libs preparation</h1>
 <p>pytorch<br>
 torch2trt</p>
@@ -28,8 +28,10 @@ torch2trt</p>
 </code></pre>
 <p>In this log, the cost time of moving date(0.105587) is far more larger than segmentation(0.009063), it cost more time when the image size increase.</p>
 <h1 id="2-convert-the-python-model-to-be-applied-in-c-libtorch">2, Convert the python model to be applied in C++ libtorch</h1>
-<p>Command: python seg.py --pytorch2cpp<br>
-Issue: Error happens.</p>
+<p>Command:</p>
+<pre><code class="language-shell">python seg.py --pytorch2cpp
+</code></pre>
+<p>Issue: Error happens.</p>
 <h1 id="3-convert-the-pytorch-model-to-onnx-and-tensorrt-engine-and-run-it">3, Convert the pytorch model to ONNX and tensorrt engine, and run it.</h1>
 <p>Command:</p>
 <pre><code class="language-shell">python seg.py --torch2onnx --onnx2trt

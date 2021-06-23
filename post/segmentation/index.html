@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Segmentation | Gridea</title>
-<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1624434864185">
+<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1624434930971">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="Segmentation | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
@@ -26,7 +26,7 @@ python seg.py --pred_by_pytor..." />
       <div class="main-content">
         <div class="site-header">
   <a href="https://lhf2011.github.io">
-  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1624434864185" alt="">
+  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1624434930971" alt="">
   </a>
   <h1 class="site-title">
     Gridea
@@ -105,8 +105,10 @@ torch2trt</p>
 </code></pre>
 <p>In this log, the cost time of moving date(0.105587) is far more larger than segmentation(0.009063), it cost more time when the image size increase.</p>
 <h1 id="2-convert-the-python-model-to-be-applied-in-c-libtorch">2, Convert the python model to be applied in C++ libtorch</h1>
-<p>Command: python seg.py --pytorch2cpp<br>
-Issue: Error happens.</p>
+<p>Command:</p>
+<pre><code class="language-shell">python seg.py --pytorch2cpp
+</code></pre>
+<p>Issue: Error happens.</p>
 <h1 id="3-convert-the-pytorch-model-to-onnx-and-tensorrt-engine-and-run-it">3, Convert the pytorch model to ONNX and tensorrt engine, and run it.</h1>
 <p>Command:</p>
 <pre><code class="language-shell">python seg.py --torch2onnx --onnx2trt

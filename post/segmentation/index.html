@@ -3,7 +3,7 @@
     <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Segmentation Known Issues | Gridea</title>
-<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1624435026958">
+<link rel="shortcut icon" href="https://lhf2011.github.io/favicon.ico?v=1624436375827">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@2.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://lhf2011.github.io/styles/main.css">
 <link rel="alternate" type="application/atom+xml" title="Segmentation Known Issues | Gridea - Atom Feed" href="https://lhf2011.github.io/atom.xml">
@@ -26,7 +26,7 @@ python seg.py --pred_by_pytor..." />
       <div class="main-content">
         <div class="site-header">
   <a href="https://lhf2011.github.io">
-  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1624435026958" alt="">
+  <img class="avatar" src="https://lhf2011.github.io/images/avatar.png?v=1624436375827" alt="">
   </a>
   <h1 class="site-title">
     Gridea
@@ -83,7 +83,7 @@ python seg.py --pred_by_pytor..." />
             </h2>
             <div class="post-info">
               <span>
-                2021-06-20
+                2021-06-17
               </span>
               <span>
                 2 min read
@@ -121,8 +121,8 @@ Then run:</p>
 <pre><code class="language-shell">segmentation cost time(): 0.123997
 </code></pre>
 <p>And the segmentation result will be saved in “./input/2021-03-16-11-30-12_4/seg_color.jpg”.<br>
-Issue: Check the segmentation result “seg_color.jpg”, it shows a correct contour, but the prediction is not correct. The same issue happens when the ONNX model runs in openvino.</p>
-<img src="../post-images/20200909_1.png" width="200" height="180" align=center />
+Issue: Check the segmentation result “seg_color.jpg”, it shows a correct contour, but the prediction is not correct. The same issue happens when the ONNX model runs in openvino.<br>
+<img src="../../post-images/seg_color_incorrect.PNG" width="600" height="200" align=center /></p>
 <h1 id="4-convert-the-pytorch-model-to-tensorrt-script-and-run-it">4, Convert the pytorch model to tensorrt script, and run it.</h1>
 <p>Command:</p>
 <pre><code class="language-shell">python seg.py --torch2trt
@@ -135,7 +135,7 @@ Then run:</p>
 <pre><code class="language-shell">segmentation cost time: 0.002163
 </code></pre>
 <p>And the segmentation result will be saved in “./input/2021-03-16-11-30-12_4/seg_color.jpg”, and this result should be correct.</p>
-<img src="../post-images/20200909_1.png" width="200" height="180" align=center />
+<img src="../../post-images/seg_color_correct.png" width="600" height="200" align=center />
 
               </div>
               <div class="toc-container">
